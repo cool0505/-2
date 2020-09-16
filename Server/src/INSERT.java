@@ -1,9 +1,10 @@
+package Server;
 import java.sql.*;
 import java.util.Date;
 
 public class INSERT {
 
-	Connect connect = new Connect();
+	Connect_signup connect = new Connect_signup();
 	
 	Statement stmt =  null;
 	int r = 0;
@@ -19,17 +20,17 @@ public class INSERT {
 			
 			String[]tokens = receiveString.split("/");
 			
-			r = stmt.executeUpdate("insert into user" + "(SchoolNum, Name, ID, PW, Date) value ('"
+			r = stmt.executeUpdate("insert into user_signup" + "(SchoolNum, Name, ID, PW, Date) value ('"
 					+ tokens[0] + "','" + tokens[1] + "','" + tokens[2] + "','" + tokens[3] + "','" + now + "')");
 			if(r==1) {
-				System.out.println("success");
+				System.out.println("User " + tokens[1] + " Sign up");
 				state = "Success"; 
 			}
 			else {
 				System.out.println("fail");
 				state = "Fail";
 			}
-			
+
 			stmt.close();
 			
 		} catch (SQLException ex) {
