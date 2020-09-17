@@ -1,4 +1,4 @@
-package Server;
+
 import java.io.*;
 import java.net.*;
 import java.sql.*;
@@ -18,8 +18,11 @@ public class Server {
 				
 				ReceiveThread receive = new ReceiveThread();
 				receive.setSocket(socket);
-				
 				receive.start();
+				
+				SendThread send = new SendThread();
+				send.setSocket(socket);
+				send.start();
 			}
 			
 		}catch(Exception e) {}
