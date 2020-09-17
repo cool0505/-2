@@ -18,13 +18,13 @@ public class GET {
 	public static String[][] getUser(){
 		try{
 			Connection conn = getConnection();
-			PreparedStatement statement = conn.prepareStatement("Select Name, Num, DP, ID, PW FROM User");
+			PreparedStatement statement = conn.prepareStatement("Select Num, Name, DP, ID, PW FROM User");
 			ResultSet results = statement.executeQuery();
 			ArrayList<String[]> list = new ArrayList<String[]>();
 			while(results.next()){
 				list.add(new String[]{
-							results.getString("Name"),
 							results.getString("Num"),
+							results.getString("Name"),
 							results.getString("DP"),
 							results.getString("ID"),
 							results.getString("PW")
@@ -40,14 +40,14 @@ public class GET {
 		}
 	}
 	
-	public static void createUser(String name, String num, String dp, String id, String pw ){
+	public static void createUser(String num, String name, String dp, String id, String pw ){
 		try{
 			Connection conn = getConnection();
 			PreparedStatement insert = conn.prepareStatement(""
 					+ "INSERT INTO User"
-					+ "(Name, Num, DP, ID, PW) "
+					+ "(Num, Name, DP, ID, PW) "
 					+ "VALUE "
-					+ "('"+name+"','"+num+"','"+dp+"','"+id+"','"+pw+"')");
+					+ "('"+num+"','"+name+"','"+dp+"','"+id+"','"+pw+"')");
 			insert.executeUpdate();
 			System.out.println("The data has been saved!");
 		}catch(Exception e){
@@ -60,13 +60,13 @@ public class GET {
 			Connection conn = getConnection();
 			PreparedStatement create = conn.prepareStatement(
 					"CREATE TABLE IF NOT EXISTS "
-					+ "User(id int NOT NULL AUTO_INCREMENT,"
-					+ "Name varChar(45),"
+					+ "User(Num int NOT NULL AUTO_INCREMENT,"
 					+ "Num varChar(45),"
+					+ "Name varChar(45),"
 					+ "DP varChar(45),"
 					+ "ID varChar(45),"
 					+ "PW varChar(45),"
-					+ "PRIMARY KEY(ID))");
+					+ "PRIMARY KEY(Num))");
 			create.execute();
 		}catch(Exception e){
 			System.out.println(e.getMessage());

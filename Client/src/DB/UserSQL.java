@@ -1,6 +1,5 @@
 package DB;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,8 +8,8 @@ import java.sql.Statement;
 
 public class UserSQL {
 	
-	public final int SEARCH_NAME = 0;
-	public final int SEARCH_NUM = 1;
+	public final int SEARCH_NUM = 0;
+	public final int SEARCH_NAME = 1;
 	public final int SEARCH_DP = 2;
 	public final int SEARCH_ID = 3;
 	public final int SEARCH_PW = 4;
@@ -47,21 +46,21 @@ public class UserSQL {
 		return (result > 0) ? true : false;
 	}
 	
-	public boolean addUser(int dialogMode, String name, int num, String dp, String id, String pw) {
+	public boolean addUser(int dialogMode, int num, String name, String dp, String id, String pw) {
 		int result = 0;
 
 		try {
 			if(dialogMode == NEW_MODE) {
 				ps = conn.prepareStatement("INSERT INTO User VALUES (?,?,?,?,?)");
-				ps.setString(1, name);
-				ps.setInt(2, num);
+				ps.setInt(1, num);
+				ps.setString(2, name);
 				ps.setString(3, dp);
 				ps.setString(4, id);
 				ps.setString(5, pw);
 			} else {
 				ps = conn.prepareStatement("UPDATE User SET Name=?, Num=?, DP=?, PW=?, ID=?");
-				ps.setString(1, name);
-				ps.setInt(2, num);
+				ps.setInt(1, num);
+				ps.setString(2, name);
 				ps.setString(3, dp);
 				ps.setString(4, pw);
 				ps.setString(5, id);

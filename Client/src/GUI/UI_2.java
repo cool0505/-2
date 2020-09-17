@@ -1,20 +1,16 @@
 package GUI;
 
+import DB.*;
+
 import java.awt.Dimension;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Connection;
-
+import java.sql.*;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import java.awt.Color;
@@ -23,14 +19,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-
-import DB.CONNECT;
-import DB.UserSQL;
-
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 /*
- * 관리자 클래스
+ * 회원 정보를 관리하는  클래스
  * 추가, 변경, 삭제, 검색
  * */
 
@@ -43,8 +35,8 @@ public class UI_2 {
 	JPanel add_panel;
 	JTable table;
 	DefaultTableModel model;
-	JTextField addName_textField;
 	JTextField addNum_textField;
+	JTextField addName_textField;
 	JTextField addDp_textField;
 	JTextField addId_textField;
 	JTextField addPw_textField;
@@ -54,8 +46,8 @@ public class UI_2 {
 	JButton idCheck_Button;
 	JDialog dialog = new JDialog(frame);
 	
-	public final int SEARCH_NAME = 0;
-	public final int SEARCH_NUM = 1;
+	public final int SEARCH_NUM = 0;
+	public final int SEARCH_NAME = 1;
 	public final int SEARCH_DP = 2;
 	public final int SEARCH_ID = 3;
 	public final int SEARCH_PW = 4;
@@ -111,7 +103,7 @@ public class UI_2 {
 		table_panel.setLayout(null);
 		table_panel.setVisible(true);
 		
-		String[] headers = new String [] {"이름","학번","학과","ID","PW"};
+		String[] headers = new String [] {"학번", "이름", "학과", "ID", "PW"};
 		DefaultTableModel model = new DefaultTableModel(headers, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -137,42 +129,35 @@ public class UI_2 {
 		JButton search_Button = new JButton("검색");
 		search_Button.setFont(new Font("굴림", Font.BOLD, 15));
 		search_Button.setBackground(Color.LIGHT_GRAY);
-		search_Button.setBounds(364, 451, 77, 31);
+		search_Button.setBounds(373, 451, 77, 31);
 		table_panel.add(search_Button);
 		
 		JButton add_Button = new JButton("추가");
 		add_Button.setForeground(Color.WHITE);
 		add_Button.setFont(new Font("굴림", Font.BOLD, 15));
 		add_Button.setBackground(new Color(0, 102, 153));
-		add_Button.setBounds(5, 2, 77, 31);
+		add_Button.setBounds(245, 2, 77, 31);
 		table_panel.add(add_Button);
 		
 		JButton edit_Button = new JButton("변경");
 		edit_Button.setForeground(Color.WHITE);
 		edit_Button.setFont(new Font("굴림", Font.BOLD, 15));
 		edit_Button.setBackground(new Color(0, 102, 153));
-		edit_Button.setBounds(158, 2, 77, 31);
+		edit_Button.setBounds(351, 2, 77, 31);
 		table_panel.add(edit_Button);
 		
 		JButton delete_Button = new JButton("삭제");
 		delete_Button.setForeground(Color.WHITE);
 		delete_Button.setFont(new Font("굴림", Font.BOLD, 15));
 		delete_Button.setBackground(new Color(0, 102, 153));
-		delete_Button.setBounds(315, 2, 77, 31);
+		delete_Button.setBounds(457, 2, 77, 31);
 		table_panel.add(delete_Button);
 		
 		search_textField = new JTextField();
 		search_textField.setFont(new Font("굴림", Font.PLAIN, 14));
-		search_textField.setBounds(157, 451, 183, 31);
+		search_textField.setBounds(162, 451, 183, 31);
 		table_panel.add(search_textField);
 		search_textField.setColumns(10);
-		
-		JButton search_Button_1 = new JButton("저장");
-		search_Button_1.setForeground(Color.WHITE);
-		search_Button_1.setFont(new Font("굴림", Font.BOLD, 15));
-		search_Button_1.setBackground(new Color(0, 102, 153));
-		search_Button_1.setBounds(457, 2, 77, 31);
-		table_panel.add(search_Button_1);
 		
 		JComboBox<String> comboBox = new JComboBox<String>();
 		comboBox.setFont(new Font("굴림", Font.PLAIN, 14));
@@ -184,6 +169,12 @@ public class UI_2 {
 		comboBox.addItem("PW");
 		comboBox.addItem("전체");
 		table_panel.add(comboBox);
+		
+		JLabel title_Label = new JLabel("학생 목록");
+		title_Label.setHorizontalAlignment(SwingConstants.CENTER);
+		title_Label.setFont(new Font("굴림", Font.BOLD, 17));
+		title_Label.setBounds(27, 2, 178, 32);
+		table_panel.add(title_Label);
 		
 		add_panel = new JPanel();
 		add_panel.setBounds(0, 0, 546, 492);
@@ -371,6 +362,7 @@ public class UI_2 {
 						JOptionPane.showMessageDialog(frame, "검색어를 입력해주세요.");
 					}
 				} else {
+					search_Button.setText("검색");
 					searchUser(SEARCH_NONE, null);
 				}
 			}
@@ -494,8 +486,8 @@ public class UI_2 {
 					break;
 				
 				case 1:
-					String name = String.valueOf(model.getValueAt(table.getSelectedRow(), 0));
-					int num = Integer.valueOf((String)model.getValueAt(table.getSelectedRow(), 1));
+					int num = Integer.valueOf((String)model.getValueAt(table.getSelectedRow(), 0));
+					String name = String.valueOf(model.getValueAt(table.getSelectedRow(), 1));
 					String dp = String.valueOf(model.getValueAt(table.getSelectedRow(), 2));
 					String id = String.valueOf(model.getValueAt(table.getSelectedRow(), 3));
 					String pw = String.valueOf(model.getValueAt(table.getSelectedRow(), 4));
@@ -504,8 +496,8 @@ public class UI_2 {
 					add_panel.setVisible(true);
 				
 					addTitle_Label.setText("정보 수정");
-					addName_textField.setText(name);
 					addNum_textField.setText(String.valueOf(num));
+					addName_textField.setText(name);
 					addId_textField.setText(id);
 					addDp_textField.setText(dp);
 					addPw_textField.setText(pw);
@@ -526,8 +518,8 @@ public class UI_2 {
 				add_panel.setVisible(true);
 				table_panel.setVisible(false);
 				addTitle_Label.setText("정보 추가");
-				addName_textField.setText(null);
 				addNum_textField.setText(null);
+				addName_textField.setText(null);
 				addId_textField.setText(null);
 				addDp_textField.setText(null);
 				addPw_textField.setText(null);
@@ -612,7 +604,7 @@ public class UI_2 {
 		
 		//오류가 없는 경우
 		else {
-			if(userSql.addUser(dialogMode, addName_textField.getText().trim(), Integer.valueOf(addNum_textField.getText()), addDp_textField.getText().trim(), addId_textField.getText().trim(), addPw_textField.getText().trim())) {
+			if(userSql.addUser(dialogMode, Integer.valueOf(addNum_textField.getText()), addName_textField.getText().trim(), addDp_textField.getText().trim(), addId_textField.getText().trim(), addPw_textField.getText().trim())) {
 				if(dialogMode == NEW_MODE) {
 					JOptionPane.showMessageDialog(dialog, "추가 완료");
 				}
@@ -628,5 +620,4 @@ public class UI_2 {
 			}
 		}
 	}
-	
 }

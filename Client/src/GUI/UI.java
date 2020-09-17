@@ -1,10 +1,13 @@
+package GUI;
+
+import DB.*;
+import LOGIN.*;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -12,15 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
-
-import DB.CONNECT;
-import DB.UserSQL;
-import LOGIN.LOGIN;
-import LOGIN.USER;
-
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -33,6 +29,10 @@ import java.awt.Color;
 
 public class UI {
 	UserSQL userSql = new UserSQL();
+	LOGIN login = new LOGIN();
+	USER user = new USER();
+	CONNECT conn = new CONNECT();
+	
 	JFrame frame;
 	JDialog dialog = new JDialog(frame);
 	JPanel login_panel;
@@ -47,10 +47,7 @@ public class UI {
 	JPasswordField pwField_1;
 	JPasswordField pwField_2;
 	JComboBox<String> dp_comboBox;
-
-	LOGIN login = new LOGIN();
-	USER user = new USER();
-	CONNECT conn = new CONNECT();
+	
 	private JLabel login_Label;
 	private JTextField num_textField;
 	Choice choice;
@@ -309,7 +306,7 @@ public class UI {
 				//ID를 입력한 경우에만
 				if(id_textField_1.getText().length() > 0) {
 					//아이디가 존재하는 경우
-					if(UserSQL.idCheck(id_textField_1.getText())) {
+					if(userSql.idCheck(id_textField_1.getText())) {
 						JOptionPane.showMessageDialog(dialog, "사용할 수 없는 아이디입니다.");
 						
 						id_textField_1.setText(null);
@@ -340,8 +337,8 @@ public class UI {
 				} else {
 					try {
 						ps = ((Connection) conn2).prepareStatement("INSERT INTO User VALUES(?,?,?,?,?)");
-						ps.setString(1, name_textField.getText());
-						ps.setString(2, num_textField.getText());
+						ps.setString(1, num_textField.getText());
+						ps.setString(2, name_textField.getText());
 						ps.setString(3, dp_comboBox.getSelectedItem().toString());
 						ps.setString(4, id_textField_1.getText());
 						ps.setString(5, pwField_2.getText());
