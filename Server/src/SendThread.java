@@ -11,7 +11,7 @@ public class SendThread extends Thread {
 	public void run() {
 
 		super.run();
-
+		
 		try {
 			
 			PrintWriter out = new PrintWriter(s_socket.getOutputStream());

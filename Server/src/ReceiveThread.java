@@ -6,37 +6,36 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
+public class ReceiveThread extends Thread {
 
-public class ReceiveThread extends Thread{
-	
 	Login login = new Login();
 	INSERT insert = new INSERT();
 	private Socket s_socket;
-	
+
 	@Override
 	public void run() {
-		
+
 		super.run();
-			
+
 		try {
-			
+
 			BufferedReader reader = new BufferedReader(new InputStreamReader(s_socket.getInputStream()));
-			
+
 			String receiveString = reader.readLine();
-			
+
 			System.out.println(receiveString);
-			
+
 			StringTokenizer token = new StringTokenizer(receiveString, "/");
 
-			if(token.countTokens() == 4)
+			if (token.countTokens() == 4)
 				insert.insert(receiveString);
-			else if(token.countTokens() == 2)
+			else if (token.countTokens() == 2)
 				login.login(receiveString);
-			
+
 			reader.close();
 			s_socket.close();
-			
-		}catch(IOException e) {
+
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
