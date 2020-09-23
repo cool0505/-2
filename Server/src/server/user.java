@@ -1,5 +1,6 @@
+package server;
 
-public class USER {
+public class user {
 	
 	String name;
 	String id;

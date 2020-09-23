@@ -1,3 +1,4 @@
+package server;
 
 import java.util.Date;
 import java.sql.Connection;
@@ -7,10 +8,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Login {
+public class login {
 
-	Connect_signup connect1 = new Connect_signup();
-	Connect_login connect2 = new Connect_login();
+	connect_signup connect1 = new connect_signup();
+	connect_login connect2 = new connect_login();
 	Statement stmt = null;
 	ResultSet r1;
 	int r2;
@@ -21,14 +22,14 @@ public class Login {
 		Scanner scn = new Scanner(System.in);
 		Connection conn1 = connect1.makeconnect();
 		Connection conn2 = connect2.makeconnect();
-		ArrayList<USER> list = new ArrayList<USER>();
+		ArrayList<user> list = new ArrayList<user>();
 		
 		try {
 			Statement stmt1 = conn1.createStatement();
 			r1 = stmt1.executeQuery("SELECT ID, PW FROM user_signup");
 			
 			while(r1.next()) {
-				USER user = new USER();
+				user user = new user();
 			//	user.setID(r1.getString("NAME"));
 				user.setID(r1.getString("ID"));
 				user.setPW(r1.getString("PW"));
