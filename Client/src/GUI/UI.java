@@ -6,7 +6,6 @@ import LOGIN.*;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -16,8 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -28,6 +25,29 @@ import java.awt.Choice;
 import java.awt.Color;
 
 public class UI {
+	/* 
+	 * 사용자가 로그인/회원가입할 때 입력한 값
+	 * 학번 = UserNum
+	 * 이름 = UserName
+	 * 아이디 = UserID
+	 * 비밀번호 = UserPW
+	 * 
+	 * 아이디 중복  확인 = idCheck (중복되는 아이디 없으면 1 / 없으면 0)
+	 * 
+	 * UI에서 필요한 값
+	 * 로그인 결과 = LoginResult (성공 1 / 아이디 잘못 입력한 경우 0 / 비밀번호 잘못 입력한 경우 -1)
+	 * 회원가입 결과 = SignUpResult (성공 1 / 실패 0)
+	 * */
+	String UserNum = null;
+	String UserName = null;
+	String UserId = null;
+	String UserPw = null;
+	int LoginResult = 0;
+	int SignUpResult = 0;
+	int idCheck = 0;
+
+	int check = 0;
+	
 	UserSQL userSql = new UserSQL();
 	LOGIN login = new LOGIN();
 	USER user = new USER();
@@ -46,7 +66,6 @@ public class UI {
 	JTextField id_textField_1;
 	JPasswordField pwField_1;
 	JPasswordField pwField_2;
-	JComboBox<String> dp_comboBox;
 	
 	private JLabel login_Label;
 	private JTextField num_textField;
@@ -81,7 +100,7 @@ public class UI {
 	private void initialize() {
 		
 		frame = new JFrame();
-		frame.setTitle("Project");
+		frame.setTitle("UNIV-PASS");
 		frame.setBounds(100, 100, 520, 353);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
@@ -184,26 +203,12 @@ public class UI {
 		signUp_Button.setFont(new Font("굴림", Font.BOLD, 17));
 		signUp_panel.add(signUp_Button);
 		
-		dp_comboBox = new JComboBox<String>();
-		signUp_panel.add(dp_comboBox);
-		dp_comboBox.setFont(new Font("굴림", Font.PLAIN, 15));
-		dp_comboBox.setBounds(362, 93, 123, 28);
-		
 		JButton idCheck_Button = new JButton("중복확인");
 		idCheck_Button.setForeground(Color.WHITE);
 		idCheck_Button.setFont(new Font("굴림", Font.BOLD, 17));
 		idCheck_Button.setBackground(new Color(0, 102, 153));
 		idCheck_Button.setBounds(362, 162, 123, 40);
 		signUp_panel.add(idCheck_Button);
-		
-		dp_comboBox.addItem("학과 선택");
-		dp_comboBox.addItem("컴퓨터공학부");
-		dp_comboBox.addItem("경영학과");
-		dp_comboBox.addItem("간호학과");
-		dp_comboBox.addItem("국어국문학과");
-		dp_comboBox.addItem("신학과");
-		dp_comboBox.addItem("기계공학과");
-
 		signUp_panel.setVisible(false);
 		
 		//로그인 패널
@@ -279,100 +284,137 @@ public class UI {
 			}
 		});
 		
-		//로그인 정보 입력
+		//로그인 정보를 입력하고 로그인 버튼을 눌렀을 때
 		login_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				login.infoId(id_textField.getText());
+				
+				//입력된 로그인 정보를 변수에 저장하는 부분
+				UserId = id_textField.getText();
+				UserPw = pw_textField.getText();
+				
+				//[서버] - 로그인 정보 대조
+/*				login.infoId(id_textField.getText());
 				login.infoPw(pw_textField.getText());
 				
 				login.login();
 				
-				int x = login.ex();
+				LoginResult = login.ex();*/
 				
-				if(x == 1) {
-					JOptionPane.showMessageDialog(null, "Success");
-				} else if (x == 0) {
-					JOptionPane.showMessageDialog(null, "failed");
-					id_textField.setText(null);
-					pw_textField.setText(null);
+				
+				if(LoginResult == 1) {
+					JOptionPane.showMessageDialog(null, "로그인이 완료되었습니다.");
+				} else if(LoginResult == 0) {
+					JOptionPane.showMessageDialog(null, "아이디가 존재하지 않습니다.");
+					
+					id_textField.setText("아이디");
+					id_textField.setForeground(Color.LIGHT_GRAY);
+					id_textField.addMouseListener(new MouseAdapter(){
+			            @Override
+			            public void mouseClicked(MouseEvent e){
+			            	id_textField.setText("");
+			            	id_textField.setForeground(Color.BLACK);
+			            }
+			        });
+					
+					pw_textField.setText("비밀번호");
+					pw_textField.setForeground(Color.LIGHT_GRAY);
+					pw_textField.addMouseListener(new MouseAdapter(){
+			            @Override
+			            public void mouseClicked(MouseEvent e){
+			            	pw_textField.setText("");
+			            	pw_textField.setForeground(Color.BLACK);
+			            }
+			        });
+				} else if(LoginResult == -1) {
+					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
+					
+					pw_textField.setText("비밀번호");
+					pw_textField.setForeground(Color.LIGHT_GRAY);
+					pw_textField.addMouseListener(new MouseAdapter(){
+			            @Override
+			            public void mouseClicked(MouseEvent e){
+			            	pw_textField.setText("");
+			            	pw_textField.setForeground(Color.BLACK);
+			            }
+			        });
 				}
 			}
 		});
 		
+		//아이디 중복 여부를 체크하는 버튼을 눌렀을 때
 		idCheck_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//ID를 입력한 경우에만
-				if(id_textField_1.getText().length() > 0) {
-					//아이디가 존재하는 경우
-					if(userSql.idCheck(id_textField_1.getText())) {
+				if(id_textField_1.getText().length() > 0) {  //아이디를 입력한 경우
+					if(userSql.idCheck(id_textField_1.getText())) {  //아이디가 존재하는 경우
 						JOptionPane.showMessageDialog(dialog, "사용할 수 없는 아이디입니다.");
 						
 						id_textField_1.setText(null);
 						id_textField_1.requestFocus();
-					}
-					//없는 아이디인 경우
-					else {
+					} else {	//중복되는 아이디가 없는 경우
 						JOptionPane.showMessageDialog(dialog, "사용 가능한 아이디입니다.");
 					}
-				}
-				else {
+				} else {
 					JOptionPane.showMessageDialog(dialog, "아이디를 입력해주세요.");
 					id_textField_1.requestFocus();
 				}
 			}			
 		});
 		
-		//회원가입 정보 입력
+		//회원가입 정보를 입력하고 회원가입 버튼을 눌렀을 때
 		signUp_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PreparedStatement ps;
+				
+				UserNum = num_textField.getText();
+				UserName = name_textField.getText();
+				UserId = id_textField_1.getText();
+				UserPw = pwField_2.getText();
+				
+				
+				if(SignUpResult == 1 ) {
+					JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
+					login_panel.setVisible(true);
+					signUp_panel.setVisible(false);
+					
+					//[서버] - 입력받은 정보 저장 (주석처리함)
+					/*
+					 * 
+					 * 
+					 * */
+				} else {
+					if(idCheck == 0) {	//아이디가 이미 존재할 경우
+						JOptionPane.showMessageDialog(null, "동일한 아이디가 존재합니다.");
+					}
+				}
+				
+/*				PreparedStatement ps;
 				Connection conn2 = conn.getDB();
+				
+				//비밀번호 입력창과 비밀번호확인 입력창의 내용이 다르면 비밀번호가 다르다는 메시지 출력
 				if(!(pwField_1.getText().contentEquals(pwField_2.getText()))) {
 					JOptionPane.showMessageDialog(null, "비밀번호 다름");
-				} else if (dp_comboBox.getSelectedIndex() == 0){
-					JOptionPane.showMessageDialog(null, "학과를 선택하세요.");
 				} else {
 					try {
-						ps = ((Connection) conn2).prepareStatement("INSERT INTO User VALUES(?,?,?,?,?)");
+						ps = ((Connection) conn2).prepareStatement("INSERT INTO User VALUES(?,?,?,?)");
 						ps.setString(1, num_textField.getText());
 						ps.setString(2, name_textField.getText());
-						ps.setString(3, dp_comboBox.getSelectedItem().toString());
-						ps.setString(4, id_textField_1.getText());
-						ps.setString(5, pwField_2.getText());
+						ps.setString(3, id_textField_1.getText());
+						ps.setString(4, pwField_2.getText());
 						ps.executeUpdate();
-						JOptionPane.showMessageDialog(null, "Success");
+						JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
 						
 						name_textField.setText(null);
 						num_textField.setText(null);
-						dp_comboBox.setSelectedIndex(0);
-						id_textField.setText(null);
+						id_textField_1.setText(null);
 						pwField_1.setText(null);
 						pwField_2.setText(null);
+
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-				}
-			}
-		});
-	}
-	
-	private static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
+				}*/
 			}
 		});
 	}
