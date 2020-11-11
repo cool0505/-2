@@ -13,7 +13,7 @@ public class arraylist_user {
 	connect_signup connect = new connect_signup();
 	Statement stmt = null;
 	ResultSet r;
-	String message = null;
+	String message = "1";
 	int state = 0;
 	
 	public void list(String receiveString) {
@@ -49,14 +49,14 @@ public class arraylist_user {
 				for (int i = 0; i < list.size(); i++) {
 					if (tokens[0].equals(list.get(i).getID()) == true && tokens[1].equals(list.get(i).getPW()) == true) {
 						login.insert_login(receiveString);
+						send.set_message(message);
 						this.state = 1;
 						break;
 					}
 				}
 				
 				if(this.state != 1) {
-					message = "가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.";
-					System.out.println(message);
+					message = "0";
 					send.set_message(message);
 					this.state = 0;
 				}
@@ -66,16 +66,17 @@ public class arraylist_user {
 			if (tokens.length == 4) {
 				for (int i = 0; i < list.size(); i++) {
 					if (tokens[0].equals(list.get(i).getClassof()) == true || tokens[2].equals(list.get(i).getID()) == true) {
-						message = "이미 존재하는 학번 또는 아이디입니다.";
-						System.out.println(message);
+						message = "0";
 						send.set_message(message);
 						this.state = 1;
 						break;
 					}
 				}
 				
-				if(this.state != 1)
+				if(this.state != 1) {
 					sign.insert_signup(receiveString);
+					send.set_message(message);
+				}
 
 				this.state = 0;
 			}

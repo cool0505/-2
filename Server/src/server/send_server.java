@@ -11,7 +11,7 @@ import java.net.Socket;
 
 public class send_server {//extends Thread {
 
-	String message = null;
+	String message = "0";
 /*
 	@Override
 	public void run() {
@@ -43,14 +43,16 @@ public class send_server {//extends Thread {
 		OutputStreamWriter osw = null; 
 		BufferedWriter bw = null;
 
-		System.out.println(message);
+		System.out.println("> Status : " + message);
+		
 		try {
 
 			PrintWriter print = new PrintWriter(Server.socket.getOutputStream());
 
-			System.out.println(message);
 			print.println(message);
 			print.flush();
+			
+			System.out.println("> Send!\n");
 			/*os = Server.socket.getOutputStream(); 
 			osw = new OutputStreamWriter(os); 
 			bw = new BufferedWriter(osw); 
