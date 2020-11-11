@@ -10,50 +10,31 @@ import java.util.Scanner;
 
 public class login {
 
-	connect_signup connect1 = new connect_signup();
-	connect_login connect2 = new connect_login();
+	connect_login connect = new connect_login();
 	Statement stmt = null;
-	ResultSet r1;
-	int r2;
+	int r;
+	String message = null;
 
-	public void login(String receiveString) {
-		System.out.println(receiveString+"login mes");
+	public void insert_login(String receiveString) {
+
+		System.out.println(receiveString + "login mes");
 		Date now = new Date();
-		Scanner scn = new Scanner(System.in);
-		Connection conn1 = connect1.makeconnect();
-		Connection conn2 = connect2.makeconnect();
-		ArrayList<user> list = new ArrayList<user>();
-		
-		try {
-			Statement stmt1 = conn1.createStatement();
-			r1 = stmt1.executeQuery("SELECT ID, PW FROM user_signup");
-			
-			while(r1.next()) {
-				user user = new user();
-			//	user.setID(r1.getString("NAME"));
-				user.setID(r1.getString("ID"));
-				user.setPW(r1.getString("PW"));
-				list.add(user);
-			}
-			String[]tokens = receiveString.split("/");
+		Connection conn = connect.makeconnect();
 
-			Statement stmt2 = conn2.createStatement();
+		try {
+
+			Statement stmt = conn.createStatement();
 			
-			for(int i=0;i<list.size(); i++) {
-				if(tokens[0].equals(list.get(i).getID())&&tokens[1].equals(list.get(i).getPW())) {
-					//System.out.println("User '" + list.get(i).getName() + "' Login!");
-					r2 = stmt2.executeUpdate("insert into user_login" + "(ID, PW, Date) value ('"
-							+ list.get(i).getID() + "','" + list.get(i).getPW() + "','" + now + "')");
-				}
-			}
-			
-			if(r2==1) {
-				System.out.println("User login");
-			}
-			else {
-				System.out.println("fail");
-			}
-			
+			String[] tokens = receiveString.split("/");
+
+			r = stmt.executeUpdate("insert into user_login" + "(ID, PW, Date) value ('" + tokens[0] + "','"
+					+ tokens[1] + "','" + now + "')");
+
+			if (r == 1)
+				System.out.println("User login\n");
+			else
+				System.out.println("DB connect fail");
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

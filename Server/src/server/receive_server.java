@@ -18,6 +18,8 @@ public class receive_server extends Thread{
 		
 		super.run();
 		
+		arraylist_user array = new arraylist_user();
+		
 		try {
 			BufferedReader buffer = new BufferedReader(new InputStreamReader(c_socket.getInputStream()));
 			
@@ -35,14 +37,7 @@ public class receive_server extends Thread{
 				else {
 					System.out.println(receiveString);
 					
-					StringTokenizer token = new StringTokenizer(receiveString, "/");
-
-					if (token.countTokens() == 4) {
-						signup.insert(receiveString);	
-					}
-					else if (token.countTokens() == 2) {
-						login.login(receiveString);	
-					}
+					array.list(receiveString);
 				}
 			}
 			
@@ -53,5 +48,4 @@ public class receive_server extends Thread{
 	public void setSocket(Socket socket) {
 		c_socket = socket;
 	}
-
 }

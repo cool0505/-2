@@ -14,7 +14,7 @@ public class connect_signup {
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sign_up?serverTimezone=UTC", "root",
 					"Rlanwjd67!");
 			if (conn != null)
-				System.out.println("DB connect!");
+				System.out.println("> Sign up DB connect!");
 		} catch (SQLException ex) {
 			System.out.println("SQLException:" + ex);
 		} catch (Exception e) {

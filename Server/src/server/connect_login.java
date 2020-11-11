@@ -14,7 +14,7 @@ public class connect_login {
 	        Class.forName("com.mysql.cj.jdbc.Driver");
 	        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/login?serverTimezone=UTC", "root", "Rlanwjd67!");
 	        if(conn != null)
-	        	System.out.println("DB connect!");
+	        	System.out.println("> Login DB connect!");
 	    } catch (SQLException ex) {
 	        System.out.println("SQLException:" + ex);
 	    } catch (Exception e) {
