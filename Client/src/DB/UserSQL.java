@@ -26,9 +26,7 @@ public class UserSQL {
 	ResultSet r;
 	Connection conn = connect.getDB();
 	
-	/*
-	 * 회원가입 및 추가 시, 아이디 중복 체크
-	 * */
+	// 회원가입 및 추가 시, 아이디 중복 체크
 	public boolean idCheck(String id) {
 		int result = 0;
 
@@ -46,24 +44,22 @@ public class UserSQL {
 		return (result > 0) ? true : false;
 	}
 	
-	public boolean addUser(int dialogMode, int num, String name, String dp, String id, String pw) {
+	public boolean addUser(int dialogMode, int num, String name, String id, String pw) {
 		int result = 0;
 
 		try {
 			if(dialogMode == NEW_MODE) {
-				ps = conn.prepareStatement("INSERT INTO User VALUES (?,?,?,?,?)");
+				ps = conn.prepareStatement("INSERT INTO User VALUES (?,?,?,?)");
 				ps.setInt(1, num);
 				ps.setString(2, name);
-				ps.setString(3, dp);
-				ps.setString(4, id);
-				ps.setString(5, pw);
-			} else {
-				ps = conn.prepareStatement("UPDATE User SET Name=?, Num=?, DP=?, PW=?, ID=?");
-				ps.setInt(1, num);
-				ps.setString(2, name);
-				ps.setString(3, dp);
+				ps.setString(3, id);
 				ps.setString(4, pw);
-				ps.setString(5, id);
+			} else {
+				ps = conn.prepareStatement("UPDATE User SET Name=?, Num=?, PW=?, ID=?");
+				ps.setInt(1, num);
+				ps.setString(2, name);
+				ps.setString(3, pw);
+				ps.setString(4, id);
 			}
 			result = ps.executeUpdate();
 			
@@ -76,7 +72,7 @@ public class UserSQL {
 	}
 	
 	/*
-	 * 유저 삭제
+	 * 사용자 삭제
 	 * ID를 비교해서 삭제
 	 * */
 	public boolean deleteUser(String id) {

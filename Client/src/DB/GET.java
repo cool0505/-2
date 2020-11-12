@@ -18,20 +18,19 @@ public class GET {
 	public static String[][] getUser(){
 		try{
 			Connection conn = getConnection();
-			PreparedStatement statement = conn.prepareStatement("Select Num, Name, DP, ID, PW FROM User");
+			PreparedStatement statement = conn.prepareStatement("Select Num, Name,, ID, PW FROM User");
 			ResultSet results = statement.executeQuery();
 			ArrayList<String[]> list = new ArrayList<String[]>();
 			while(results.next()){
 				list.add(new String[]{
 							results.getString("Num"),
 							results.getString("Name"),
-							results.getString("DP"),
 							results.getString("ID"),
 							results.getString("PW")
 						});
 			}
 			System.out.println("The data has been fetched");
-			String[][] arr = new String[list.size()][5];
+			String[][] arr = new String[list.size()][4];
 			return list.toArray(arr);
 			
 		}catch(Exception e){
@@ -45,9 +44,9 @@ public class GET {
 			Connection conn = getConnection();
 			PreparedStatement insert = conn.prepareStatement(""
 					+ "INSERT INTO User"
-					+ "(Num, Name, DP, ID, PW) "
+					+ "(Num, Name, ID, PW) "
 					+ "VALUE "
-					+ "('"+num+"','"+name+"','"+dp+"','"+id+"','"+pw+"')");
+					+ "('"+num+"','"+name+"','"+id+"','"+pw+"')");
 			insert.executeUpdate();
 			System.out.println("The data has been saved!");
 		}catch(Exception e){
@@ -63,7 +62,6 @@ public class GET {
 					+ "User(Num int NOT NULL AUTO_INCREMENT,"
 					+ "Num varChar(45),"
 					+ "Name varChar(45),"
-					+ "DP varChar(45),"
 					+ "ID varChar(45),"
 					+ "PW varChar(45),"
 					+ "PRIMARY KEY(Num))");

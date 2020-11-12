@@ -17,6 +17,13 @@ import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JPasswordField;
@@ -42,8 +49,8 @@ public class UI {
 	String UserName = null;
 	String UserId = null;
 	String UserPw = null;
-	int LoginResult = 0;
-	int SignUpResult = 0;
+	String LoginResult = "0";
+	String SignUpResult = "0";
 	int idCheck = 0;
 
 	int check = 0;
@@ -73,10 +80,13 @@ public class UI {
 	/**
 	 * Launch the application.
 	 */
+	static Socket socket;
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {			
 				try {
+					socket = new Socket("localhost", 8282);
 					UI window = new UI();
 					window.frame.setVisible(true);
 					
@@ -293,18 +303,24 @@ public class UI {
 				UserId = id_textField.getText();
 				UserPw = pw_textField.getText();
 				
-				//[서버] - 로그인 정보 대조
-/*				login.infoId(id_textField.getText());
-				login.infoPw(pw_textField.getText());
-				
-				login.login();
-				
-				LoginResult = login.ex();*/
-				
-				
-				if(LoginResult == 1) {
+				try {
+					InputStreamReader ISR = new InputStreamReader(socket.getInputStream());
+
+					PrintWriter print = new PrintWriter(socket.getOutputStream());
+					String sendstring = UserId + "/" + UserPw;
+					
+					print.println(sendstring);
+					print.flush();
+					
+					BufferedReader buffer = new BufferedReader(ISR);
+					
+					LoginResult = buffer.readLine();
+					
+				} catch (IOException e1) {}
+
+				if(LoginResult.equals("1")) {
 					JOptionPane.showMessageDialog(null, "로그인이 완료되었습니다.");
-				} else if(LoginResult == 0) {
+				} else if(LoginResult.equals("0")) {
 					JOptionPane.showMessageDialog(null, "아이디가 존재하지 않습니다.");
 					
 					id_textField.setText("아이디");
@@ -326,7 +342,7 @@ public class UI {
 			            	pw_textField.setForeground(Color.BLACK);
 			            }
 			        });
-				} else if(LoginResult == -1) {
+				}/* else if(LoginResult == -1) {
 					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
 					
 					pw_textField.setText("비밀번호");
@@ -338,7 +354,7 @@ public class UI {
 			            	pw_textField.setForeground(Color.BLACK);
 			            }
 			        });
-				}
+				}*/
 			}
 		});
 		
@@ -372,17 +388,23 @@ public class UI {
 				UserId = id_textField_1.getText();
 				UserPw = pwField_2.getText();
 				
+				try {
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					PrintWriter print = new PrintWriter(socket.getOutputStream());
+					String sendstring = UserNum + "/" + UserName + "/" + UserId + "/" + UserPw;
+					
+					print.println(sendstring);
+					print.flush();
+					
+					LoginResult = buffer.readLine();
+					
+				} catch (IOException e1) {}
+
 				
-				if(SignUpResult == 1 ) {
+				if(SignUpResult.equals("1")) {
 					JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
 					login_panel.setVisible(true);
 					signUp_panel.setVisible(false);
-					
-					//[서버] - 입력받은 정보 저장 (주석처리함)
-					/*
-					 * 
-					 * 
-					 * */
 				} else {
 					if(idCheck == 0) {	//아이디가 이미 존재할 경우
 						JOptionPane.showMessageDialog(null, "동일한 아이디가 존재합니다.");
