@@ -1,5 +1,3 @@
-package GUI;
-
 import DB.*;
 import LOGIN.*;
 
@@ -396,7 +394,7 @@ public class UI {
 					print.println(sendstring);
 					print.flush();
 					
-					LoginResult = buffer.readLine();
+					SignUpResult = buffer.readLine();
 					
 				} catch (IOException e1) {}
 
