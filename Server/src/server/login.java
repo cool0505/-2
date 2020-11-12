@@ -31,9 +31,9 @@ public class login {
 					+ tokens[1] + "','" + now + "')");
 
 			if (r == 1)
-				System.out.println("User login\n");
+				System.out.println(">>User login\n");
 			else
-				System.out.println("DB connect fail");
+				System.out.println(">>DB connect fail");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
