@@ -18,7 +18,7 @@ public class GET {
 	public static String[][] getUser(){
 		try{
 			Connection conn = getConnection();
-			PreparedStatement statement = conn.prepareStatement("Select Num, Name,, ID, PW FROM User");
+			PreparedStatement statement = conn.prepareStatement("Select Num, Name, ID, PW FROM User");
 			ResultSet results = statement.executeQuery();
 			ArrayList<String[]> list = new ArrayList<String[]>();
 			while(results.next()){

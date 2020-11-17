@@ -1,32 +1,43 @@
 package GUI;
 
-import DB.*;
-
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
-import javax.swing.JTable;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
-import java.awt.Color;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+import DB.CONNECT;
+import DB.UserSQL;
+
 /*
- * 관리자 페이지
+ * 관리자 인터페이스
  * */
 
 public class UI_2 {
-	Enter enter = new Enter();
 	UserSQL userSql = new UserSQL();
 	
 	JFrame frame;
@@ -35,8 +46,8 @@ public class UI_2 {
 	DefaultTableModel model, model2;	//학생 정보 테이블, 출입기록 테이블
 	JLabel enter_title_Label;
 	JTextField addNum_textField;
+	JLabel addNum_textLabel;
 	JTextField addName_textField;
-	JTextField addDp_textField;
 	JTextField addId_textField;
 	JTextField addPw_textField;
 	JTextField search_textField;
@@ -44,7 +55,7 @@ public class UI_2 {
 	JButton search_Button;
 	JButton idCheck_Button;
 	JDialog dialog = new JDialog(frame);
-	
+	BufferedImage img = null;
 	public final int SEARCH_NUM = 0;
 	public final int SEARCH_NAME = 1;
 	public final int SEARCH_DP = 2;
@@ -60,6 +71,7 @@ public class UI_2 {
 	/**
 	 * Launch the application.
 	 */
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -84,7 +96,6 @@ public class UI_2 {
 	 * Initialize the contents of the frame.
 	 */
 	public void initialize() {
-		
 		//프레임 설정
 		frame = new JFrame();
 		frame.setTitle("UNIV-PASS");
@@ -93,13 +104,142 @@ public class UI_2 {
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+
+		//이미지 객체 생성
+		try {
+			img = ImageIO.read(new File("C:\\Users\\User\\eclipse-workspace\\Project\\img.jpg"));			
+		} catch(IOException e) {
+			
+		}
 		
 		//다이얼로그 설정
 		dialog.setSize(350, 250);
 		dialog.setLocationRelativeTo(frame);
 		dialog.setResizable(false);
 		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		/*
+		 * 사용자 정보를 추가하는 페이지 (add_panel)
+		 * */
+		add_panel = new JPanel();
+		add_panel.setBounds(0, 0, 546, 492);
+		frame.getContentPane().add(add_panel);
+		add_panel.setLayout(null);
 
+
+		JButton addBack_Button = new JButton("←");
+		addBack_Button.setBounds(12, 10, 45, 36);
+		addBack_Button.setBackground(Color.LIGHT_GRAY);
+		addBack_Button.setFont(new Font("굴림", Font.PLAIN, 12));
+		add_panel.add(addBack_Button);
+		
+		addName_textField = new JTextField();
+		addName_textField.setBounds(193, 85, 216, 40);
+		addName_textField.setHorizontalAlignment(SwingConstants.CENTER);
+		addName_textField.setFont(new Font("굴림", Font.BOLD, 17));
+		addName_textField.setColumns(10);
+		add_panel.add(addName_textField);
+		
+		JLabel addName_Label = new JLabel("이름");
+		addName_Label.setBounds(50, 85, 172, 36);
+		addName_Label.setHorizontalAlignment(SwingConstants.CENTER);
+		addName_Label.setFont(new Font("굴림", Font.BOLD, 17));
+		add_panel.add(addName_Label);
+		
+/*		addNum_textField = new JTextField();
+		addNum_textField.setBounds(193, 170, 216, 40);
+		addNum_textField.setHorizontalAlignment(SwingConstants.CENTER);
+		addNum_textField.setFont(new Font("굴림", Font.BOLD, 17));
+		addNum_textField.setColumns(10);
+		add_panel.add(addNum_textField);*/
+		
+		addNum_textLabel = new JLabel();
+		addNum_textLabel.setBounds(193, 170, 216, 40);
+		addNum_textLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		addNum_textLabel.setFont(new Font("굴림", Font.BOLD, 17));
+		add_panel.add(addNum_textLabel);
+		
+		addId_textField = new JTextField();
+		addId_textField.setBounds(193, 255, 216, 40);
+		addId_textField.setHorizontalAlignment(SwingConstants.CENTER);
+		addId_textField.setFont(new Font("굴림", Font.BOLD, 17));
+		addId_textField.setColumns(10);
+		add_panel.add(addId_textField);
+		
+		addPw_textField = new JTextField();
+		addPw_textField.setBounds(193, 340, 216, 40);
+		addPw_textField.setHorizontalAlignment(SwingConstants.CENTER);
+		addPw_textField.setFont(new Font("굴림", Font.BOLD, 17));
+		addPw_textField.setColumns(10);
+		add_panel.add(addPw_textField);
+		
+		JLabel addNum_Label = new JLabel("학번");
+		addNum_Label.setBounds(50, 170, 172, 40);
+		addNum_Label.setHorizontalAlignment(SwingConstants.CENTER);
+		addNum_Label.setFont(new Font("굴림", Font.BOLD, 17));
+		add_panel.add(addNum_Label);
+		
+		JLabel addId_Label = new JLabel("ID");
+		addId_Label.setBounds(50, 255, 172, 40);
+		addId_Label.setHorizontalAlignment(SwingConstants.CENTER);
+		addId_Label.setFont(new Font("굴림", Font.BOLD, 17));
+		add_panel.add(addId_Label);
+		
+		JLabel addPw_Label = new JLabel("PW");
+		addPw_Label.setBounds(50, 340, 172, 40);
+		addPw_Label.setHorizontalAlignment(SwingConstants.CENTER);
+		addPw_Label.setFont(new Font("굴림", Font.BOLD, 17));
+		add_panel.add(addPw_Label);
+		
+		JLabel addTitle_Label = new JLabel("정보 추가");
+		addTitle_Label.setBounds(152, 10, 241, 36);
+		addTitle_Label.setHorizontalAlignment(SwingConstants.CENTER);
+		addTitle_Label.setFont(new Font("굴림", Font.PLAIN, 20));
+		add_panel.add(addTitle_Label);
+		
+		JButton add_Button2 = new JButton("추가");
+		add_Button2.setBounds(422, 411, 97, 55);
+		add_Button2.setForeground(Color.WHITE);
+		add_Button2.setBackground(new Color(0, 102, 153));
+		add_Button2.setFont(new Font("굴림", Font.BOLD, 17));
+		add_panel.add(add_Button2);
+		
+		JButton idCheck_Button = new JButton("중복 확인");
+		idCheck_Button.setForeground(Color.WHITE);
+		idCheck_Button.setFont(new Font("굴림", Font.BOLD, 14));
+		idCheck_Button.setBackground(new Color(0, 102, 153));
+		idCheck_Button.setBounds(421, 255, 97, 40);
+		add_panel.add(idCheck_Button);
+		add_panel.setVisible(false);
+		
+		//테이블 DB 불러오기
+		try {
+			ResultSet r = null;
+			CONNECT connect = new CONNECT();
+			
+			Connection conn = connect.getDB();
+			Statement stmt = conn.createStatement();
+			
+			r = stmt.executeQuery("SELECT * FROM User");
+			
+			ResultSetMetaData resultSetMetaData = r.getMetaData();
+			Object[] tempObject = new Object[resultSetMetaData.getColumnCount()];
+			model.setRowCount(0);
+			while (r.next()) {
+				for(int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
+					tempObject[i] = r.getString(i+1);
+				}
+				model.addRow(tempObject);
+			}
+			if(model.getRowCount() > 0 ) {
+				table.setRowSelectionInterval(0, 0); //첫번째줄 포커싱
+			}
+		} catch(Exception e) {
+			System.out.println("연결 오류 " + e.getStackTrace());
+		} finally {
+			userSql.closeDatabase();
+		}
+		
 		/*
 		 * 관리자 페이지 (main_panel)
 		 * 학생 관리, 출입 관리, 종료 버튼 중 선택한다.
@@ -155,7 +295,7 @@ public class UI_2 {
 		JButton whereEnd_Button = new JButton("←");
 		whereEnd_Button.setFont(new Font("굴림", Font.BOLD, 10));
 		whereEnd_Button.setBackground(new Color(220, 220, 220));
-		whereEnd_Button.setBounds(3, 3, 72, 41);
+		whereEnd_Button.setBounds(3, 3, 47, 32);
 		where_panel.add(whereEnd_Button);
 		where_panel.setVisible(false);
 
@@ -345,7 +485,6 @@ public class UI_2 {
 		hall_panel.add(hall_back_Button);
 		hall_panel.setVisible(false);
 
-
 		/*
 		 * 사용자 정보 관리 페이지 (table_panel)
 		 * 추가, 변경, 삭제 버튼 눌러 페이지 이동 후 관리 기능 수행
@@ -414,7 +553,6 @@ public class UI_2 {
 		table_comboBox.setFont(new Font("굴림", Font.PLAIN, 14));
 		table_comboBox.setBounds(64, 452, 77, 28);
 		table_comboBox.addItem("이름");
-		table_comboBox.addItem("학번");
 		table_comboBox.addItem("ID");
 		table_comboBox.addItem("PW");
 		table_comboBox.addItem("전체");
@@ -433,133 +571,7 @@ public class UI_2 {
 		table_panel.add(table_back_Button);
 		table_panel.setVisible(false);
 		
-		/*
-		 * 사용자 정보를 추가하는 페이지 (add_panel)
-		 * */
-		add_panel = new JPanel();
-		add_panel.setBounds(0, 0, 546, 492);
-		frame.getContentPane().add(add_panel);
-		add_panel.setLayout(null);
-		
-		JButton addBack_Button = new JButton("←");
-		addBack_Button.setBounds(12, 10, 45, 36);
-		addBack_Button.setBackground(Color.LIGHT_GRAY);
-		addBack_Button.setFont(new Font("굴림", Font.PLAIN, 12));
-		add_panel.add(addBack_Button);
-		
-		addName_textField = new JTextField();
-		addName_textField.setBounds(193, 84, 216, 40);
-		addName_textField.setHorizontalAlignment(SwingConstants.CENTER);
-		addName_textField.setFont(new Font("굴림", Font.BOLD, 17));
-		addName_textField.setColumns(10);
-		add_panel.add(addName_textField);
-		
-		JLabel addName_Label = new JLabel("이름");
-		addName_Label.setBounds(50, 86, 172, 36);
-		addName_Label.setHorizontalAlignment(SwingConstants.CENTER);
-		addName_Label.setFont(new Font("굴림", Font.BOLD, 17));
-		add_panel.add(addName_Label);
-		
-		addNum_textField = new JTextField();
-		addNum_textField.setBounds(193, 147, 216, 40);
-		addNum_textField.setHorizontalAlignment(SwingConstants.CENTER);
-		addNum_textField.setFont(new Font("굴림", Font.BOLD, 17));
-		addNum_textField.setColumns(10);
-		add_panel.add(addNum_textField);
-		
-		addDp_textField = new JTextField();
-		addDp_textField.setBounds(193, 213, 216, 40);
-		addDp_textField.setHorizontalAlignment(SwingConstants.CENTER);
-		addDp_textField.setFont(new Font("굴림", Font.BOLD, 17));
-		addDp_textField.setColumns(10);
-		add_panel.add(addDp_textField);
-		
-		addId_textField = new JTextField();
-		addId_textField.setBounds(193, 273, 216, 40);
-		addId_textField.setHorizontalAlignment(SwingConstants.CENTER);
-		addId_textField.setFont(new Font("굴림", Font.BOLD, 17));
-		addId_textField.setColumns(10);
-		add_panel.add(addId_textField);
-		
-		addPw_textField = new JTextField();
-		addPw_textField.setBounds(193, 340, 216, 40);
-		addPw_textField.setHorizontalAlignment(SwingConstants.CENTER);
-		addPw_textField.setFont(new Font("굴림", Font.BOLD, 17));
-		addPw_textField.setColumns(10);
-		add_panel.add(addPw_textField);
-		
-		JLabel addNum_Label = new JLabel("학번");
-		addNum_Label.setBounds(50, 147, 172, 40);
-		addNum_Label.setHorizontalAlignment(SwingConstants.CENTER);
-		addNum_Label.setFont(new Font("굴림", Font.BOLD, 17));
-		add_panel.add(addNum_Label);
-		
-		JLabel addDp_Label = new JLabel("학과");
-		addDp_Label.setBounds(50, 213, 172, 40);
-		addDp_Label.setHorizontalAlignment(SwingConstants.CENTER);
-		addDp_Label.setFont(new Font("굴림", Font.BOLD, 17));
-		add_panel.add(addDp_Label);
-		
-		JLabel addId_Label = new JLabel("ID");
-		addId_Label.setBounds(50, 273, 172, 40);
-		addId_Label.setHorizontalAlignment(SwingConstants.CENTER);
-		addId_Label.setFont(new Font("굴림", Font.BOLD, 17));
-		add_panel.add(addId_Label);
-		
-		JLabel addPw_Label = new JLabel("PW");
-		addPw_Label.setBounds(50, 340, 172, 40);
-		addPw_Label.setHorizontalAlignment(SwingConstants.CENTER);
-		addPw_Label.setFont(new Font("굴림", Font.BOLD, 17));
-		add_panel.add(addPw_Label);
-		
-		JLabel addTitle_Label = new JLabel("정보 추가");
-		addTitle_Label.setBounds(152, 10, 241, 36);
-		addTitle_Label.setHorizontalAlignment(SwingConstants.CENTER);
-		addTitle_Label.setFont(new Font("굴림", Font.PLAIN, 20));
-		add_panel.add(addTitle_Label);
-		
-		JButton add_Button2 = new JButton("추가");
-		add_Button2.setBounds(422, 411, 97, 55);
-		add_Button2.setForeground(Color.WHITE);
-		add_Button2.setBackground(new Color(0, 102, 153));
-		add_Button2.setFont(new Font("굴림", Font.BOLD, 17));
-		add_panel.add(add_Button2);
-		
-		JButton idCheck_Button = new JButton("중복 확인");
-		idCheck_Button.setForeground(Color.WHITE);
-		idCheck_Button.setFont(new Font("굴림", Font.BOLD, 14));
-		idCheck_Button.setBackground(new Color(0, 102, 153));
-		idCheck_Button.setBounds(421, 274, 97, 40);
-		add_panel.add(idCheck_Button);
-		add_panel.setVisible(false);
-		
-		//테이블 DB 불러오기
-		try {
-			ResultSet r = null;
-			CONNECT connect = new CONNECT();
-			Connection conn = connect.getDB();
-			Statement stmt = conn.createStatement();
-			
-			r = stmt.executeQuery("SELECT * FROM User");
-//				stmt.executeQuery("SELECT * FROM Enter");
-			
-			ResultSetMetaData resultSetMetaData = r.getMetaData();
-			Object[] tempObject = new Object[resultSetMetaData.getColumnCount()];
-			model.setRowCount(0);
-			while (r.next()) {
-				for(int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
-					tempObject[i] = r.getString(i+1);
-				}
-				model.addRow(tempObject);
-			}
-			if(model.getRowCount() > 0 ) {
-				table.setRowSelectionInterval(0, 0); //첫번째줄 포커싱
-			}
-		} catch(Exception e) {
-			System.out.println("연결 오류 " + e.getStackTrace());
-		} finally {
-			userSql.closeDatabase();
-		}
+
 		
 		idCheck_Button.addActionListener(new ActionListener() {
 			@Override
@@ -636,12 +648,7 @@ public class UI_2 {
 						case SEARCH_NAME:
 							r = stmt.executeQuery("SELECT * FROM User WHERE Name LIKE '%" + keyWord + "%'");
 						break;
-						
-						//학과
-						case SEARCH_DP:
-							r = stmt.executeQuery("SELECT * FROM User WHERE DP LIKE '%" + keyWord + "%'");
-						break;
-						
+
 						//아이디
 						case SEARCH_ID:
 							r = stmt.executeQuery("SELECT * FROM User WHERE ID LIKE '%" + keyWord + "%'");
@@ -744,8 +751,9 @@ public class UI_2 {
 					table_panel.setVisible(false);
 					add_panel.setVisible(true);
 				
-					addTitle_Label.setText("정보 수정");
-					addNum_textField.setText(String.valueOf(num));
+					addTitle_Label.setText("정보 변경");
+
+					addNum_Label.setText(String.valueOf(num));
 					addName_textField.setText(name);
 					addId_textField.setText(id);
 					addPw_textField.setText(pw);
@@ -765,10 +773,15 @@ public class UI_2 {
 				add_panel.setVisible(true);
 				table_panel.setVisible(false);
 				addTitle_Label.setText("정보 추가");
+				try {
+					
 				addNum_textField.setText(null);
 				addName_textField.setText(null);
 				addId_textField.setText(null);
 				addPw_textField.setText(null);
+				}catch (NullPointerException e1) {
+					
+				}
 				add_Button2.setText("추가");
 			}
 		});
@@ -805,7 +818,6 @@ public class UI_2 {
 			}
 		});
 		
-		//박스 
 		busPage_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -817,8 +829,8 @@ public class UI_2 {
 		whereEnd_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				where_panel.setVisible(true);
-				main_panel.setVisible(false);
+				where_panel.setVisible(false);
+				main_panel.setVisible(true);
 			}
 		});
 		
@@ -927,8 +939,14 @@ public class UI_2 {
 		enter_back_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				enter_panel.setVisible(false);
-				hall_panel.setVisible(true);
+				//건물
+				if(enter_title_Label.getText().equals("아산역") || enter_title_Label.getText().equals("천안역")) {
+					enter_panel.setVisible(false);
+					bus_panel.setVisible(true);
+				} else {
+					enter_panel.setVisible(false);
+					hall_panel.setVisible(true);
+				}
 			}
 		});
 		
@@ -951,8 +969,8 @@ public class UI_2 {
 		bus_back_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				bus_panel.setVisible(false);
 				where_panel.setVisible(true);
+				bus_panel.setVisible(false);
 			}
 		});
 	}
