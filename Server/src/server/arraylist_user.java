@@ -45,6 +45,9 @@ public class arraylist_user {
 			StringTokenizer token = new StringTokenizer(receiveString, "/");
 			String[] tokens = receiveString.split("/");
 
+			if (tokens.length == 1)
+				System.out.println(tokens[0]);
+			
 			if (tokens.length == 2) {
 				for (int i = 0; i < list.size(); i++) {
 					if (tokens[0].equals(list.get(i).getID()) == true && tokens[1].equals(list.get(i).getPW()) == true) {
