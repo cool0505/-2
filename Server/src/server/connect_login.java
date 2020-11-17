@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
+// login DB와 연결하기 위한 클래스
 public class connect_login {
 
 	public Connection makeconnect() {
