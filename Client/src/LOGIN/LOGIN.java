@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import DB.CONNECT;
+
 
 public class LOGIN {
 
@@ -15,7 +15,6 @@ public class LOGIN {
 	// ADDLIST alist = new ADDLIST();
 
 	//
-	CONNECT connect = new CONNECT();
 	Statement stmt = null;
 	ResultSet r;
 	//
@@ -36,12 +35,9 @@ public class LOGIN {
 	
 	public void login() {
 		//
-		Connection conn = connect.getDB();
 		ArrayList<USER> list = new ArrayList<USER>();
 
 		try {
-			Statement stmt = conn.createStatement();
-			r = stmt.executeQuery("SELECT Name, ID, PW FROM User");
 
 			while (r.next()) {
 				USER user = new USER();

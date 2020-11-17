@@ -1,4 +1,4 @@
-package GUI;
+package Gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -30,15 +30,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
-import DB.CONNECT;
-import DB.UserSQL;
 
 /*
  * 관리자 인터페이스
  * */
 
 public class UI_2 {
-	UserSQL userSql = new UserSQL();
+
 	
 	JFrame frame;
 	JPanel main_panel, where_panel, hall_panel, bus_panel, table_panel, enter_panel, add_panel;
@@ -213,32 +211,7 @@ public class UI_2 {
 		add_panel.setVisible(false);
 		
 		//테이블 DB 불러오기
-		try {
-			ResultSet r = null;
-			CONNECT connect = new CONNECT();
-			
-			Connection conn = connect.getDB();
-			Statement stmt = conn.createStatement();
-			
-			r = stmt.executeQuery("SELECT * FROM User");
-			
-			ResultSetMetaData resultSetMetaData = r.getMetaData();
-			Object[] tempObject = new Object[resultSetMetaData.getColumnCount()];
-			model.setRowCount(0);
-			while (r.next()) {
-				for(int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
-					tempObject[i] = r.getString(i+1);
-				}
-				model.addRow(tempObject);
-			}
-			if(model.getRowCount() > 0 ) {
-				table.setRowSelectionInterval(0, 0); //첫번째줄 포커싱
-			}
-		} catch(Exception e) {
-			System.out.println("연결 오류 " + e.getStackTrace());
-		} finally {
-			userSql.closeDatabase();
-		}
+
 		
 		/*
 		 * 관리자 페이지 (main_panel)
@@ -579,16 +552,7 @@ public class UI_2 {
 				//ID를 입력한 경우에만
 				if(addId_textField.getText().length() > 0) {
 					//아이디가 존재하는 경우
-					if(userSql.idCheck(addId_textField.getText())) {
-						JOptionPane.showMessageDialog(dialog, "사용할 수 없는 아이디입니다.");
-						
-						addId_textField.setText(null);
-						addId_textField.requestFocus();
-					}
-					//없는 아이디인 경우
-					else {
-						JOptionPane.showMessageDialog(dialog, "사용 가능한 아이디입니다.");
-					}
+					//서버로 아이디 전송
 				}
 				else {
 					JOptionPane.showMessageDialog(dialog, "아이디를 입력해주세요.");
@@ -641,27 +605,27 @@ public class UI_2 {
 			 * */
 			public void searchUser(int searchMode, String keyWord) {
 				try	{
-					Statement stmt = conn.createStatement();
+			
 
 					switch(searchMode){
 						//이름
 						case SEARCH_NAME:
-							r = stmt.executeQuery("SELECT * FROM User WHERE Name LIKE '%" + keyWord + "%'");
+							//r = stmt.executeQuery("SELECT * FROM User WHERE Name LIKE '%" + keyWord + "%'");
 						break;
 
 						//아이디
 						case SEARCH_ID:
-							r = stmt.executeQuery("SELECT * FROM User WHERE ID LIKE '%" + keyWord + "%'");
+							//r = stmt.executeQuery("SELECT * FROM User WHERE ID LIKE '%" + keyWord + "%'");
 						break;
 						
 						//전체
 						case SEARCH_ALL:
-							r = stmt.executeQuery("SELECT DISTINCT * FROM User WHERE Name LIKE '%" + keyWord + "%' OR Num LIKE '%" + keyWord + "%' OR DP LIKE '%" + keyWord + "%' OR ID LIKE '%" + keyWord + "%' OR PW LIKE '%" + keyWord + "%'");
+							//r = stmt.executeQuery("SELECT DISTINCT * FROM User WHERE Name LIKE '%" + keyWord + "%' OR Num LIKE '%" + keyWord + "%' OR DP LIKE '%" + keyWord + "%' OR ID LIKE '%" + keyWord + "%' OR PW LIKE '%" + keyWord + "%'");
 						break;
 						
 						//검색 안함
 						case SEARCH_NONE:
-							r = stmt.executeQuery("SELECT * FROM User");
+							//r = stmt.executeQuery("SELECT * FROM User");
 							search_textField.setText(null);
 							table_comboBox.setSelectedIndex(0);
 						break;
@@ -683,7 +647,7 @@ public class UI_2 {
 				catch (SQLException e) {
 					System.out.println("연결 오류 " +  e.getStackTrace());
 				} finally {
-					userSql.closeDatabase();
+					//userSql.closeDatabase();
 				}
 			}
 		});
@@ -695,7 +659,7 @@ public class UI_2 {
 					
 					if(JOptionPane.showConfirmDialog(table_panel, "해당 사용자 정보를 삭제하시겠습니까?", "삭제 확인", 0) == 0) {
 						for(int i : table.getSelectedRows()) {
-							userSql.deleteUser(String.valueOf(model.getValueAt(i, 0)));
+							//userSql.deleteUser(String.valueOf(model.getValueAt(i, 0)));
 						}
 						model.fireTableDataChanged();
 //						searchUser(SEARCH_NONE, null);
@@ -721,7 +685,7 @@ public class UI_2 {
 						catch (SQLException e1) {
 							System.out.println("연결 오류 " +  e1.getStackTrace());
 						} finally {
-							userSql.closeDatabase();
+							//userSql.closeDatabase();
 						}
 					}
 				}
@@ -998,8 +962,8 @@ public class UI_2 {
 	}
 	
 	ResultSet r = null;
-	CONNECT connect = new CONNECT();
-	Connection conn = connect.getDB();
+	//CONNECT connect = new CONNECT();
+	//Connection conn = connect.getDB();
 	private JTextField textField;
 	
 	public void addEditUser() {
@@ -1011,7 +975,7 @@ public class UI_2 {
 			JOptionPane.showMessageDialog(dialog, "아이디는 30자 이내로 입력해야 합니다.");
 			addId_textField.requestFocus();
 		}
-		else if(dialogMode == NEW_MODE && userSql.idCheck(addId_textField.getText())) {
+		else if(dialogMode == NEW_MODE ) {//&&후 중복 검사 
 			JOptionPane.showMessageDialog(dialog, "사용할 수 없는 아이디입니다.");
 			
 			addId_textField.setText(null);
@@ -1048,7 +1012,7 @@ public class UI_2 {
 		
 		//오류가 없는 경우
 		else {
-			if(userSql.addUser(dialogMode, Integer.valueOf(addNum_textField.getText()), addName_textField.getText().trim(), addId_textField.getText().trim(), addPw_textField.getText().trim())) {
+			if(true) {
 				if(dialogMode == NEW_MODE) {
 					JOptionPane.showMessageDialog(dialog, "추가 완료");
 				}

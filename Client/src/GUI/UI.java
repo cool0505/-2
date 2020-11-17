@@ -1,4 +1,5 @@
-import DB.*;
+package Gui;
+
 import LOGIN.*;
 
 import java.awt.EventQueue;
@@ -53,10 +54,10 @@ public class UI {
 
 	int check = 0;
 	
-	UserSQL userSql = new UserSQL();
+	
 	LOGIN login = new LOGIN();
 	USER user = new USER();
-	CONNECT conn = new CONNECT();
+
 	
 	JFrame frame;
 	JDialog dialog = new JDialog(frame);
