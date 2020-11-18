@@ -1,4 +1,4 @@
-package Gui;
+package GUI;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
@@ -14,12 +14,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /*
- * 사용자 인터페이스
+ * 사용자 GUI
+ * 출입기록 확인, 문진표 작성
+ * 문진표 작성 시, 아니요 또는 의심 증상이 하나라도 있으면 출입 불가
  * */
 
 public class UI_3 {
@@ -28,7 +29,10 @@ public class UI_3 {
 	JPanel main_panel, enter_panel, write_panel_1, write_panel_2;
 	JTable table;
 	DefaultTableModel model;
-	int pass;
+	
+	//출입 = pass (가능 1, 불가능 0)
+	String pass = "0";
+	
 	/**
 	 * Launch the application.
 	 */
@@ -66,7 +70,6 @@ public class UI_3 {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		
 		/*
 		 * 메인 페이지 (main_panel)
 		 * 출입기록, 문진표 작성, 종료 버튼 중 선택한다.
@@ -96,7 +99,7 @@ public class UI_3 {
 		end_Button.setBounds(292, 585, 72, 41);
 		main_panel.add(end_Button);
 		
-		JLabel pass_Label = new JLabel();
+		JLabel pass_Label = new JLabel("PASS");
 		pass_Label.setFont(new Font("굴림", Font.BOLD, 25));
 		pass_Label.setHorizontalAlignment(SwingConstants.CENTER);
 		pass_Label.setBounds(81, 65, 214, 66);
@@ -450,25 +453,32 @@ public class UI_3 {
 				main_panel.setVisible(true);
 				
 				//체크여부
-				yes.getSelectedObjects();
+				if(yes.isSelected() == true && no_1.isSelected() == true && no_2.isSelected() == true && no_3.isSelected() == true && no_4.isSelected() == true
+					&& RButton_1.isSelected() == false && RButton_2.isSelected() == false  && RButton_3.isSelected() == false && RButton_4.isSelected() == false
+					&& RButton_5.isSelected() == false && RButton_6.isSelected() == false && RButton_7.isSelected() == false && RButton_8.isSelected() == false
+					&& RButton_9.isSelected() == false && RButton_10.isSelected() == false && RButton_11.isSelected() == false && RButton_12.isSelected() == true) {
+					
+					pass = "1";
+				}
 				
-				if(pass == 1) {
-					pass_Label.setText("PASS");
+				
+				if(pass.equals("1")) {
 					pass_Label.setForeground(Color.GREEN);
+					pass = "0";
 				} else {
-					pass_Label.setText("PASS");
 					pass_Label.setForeground(Color.RED);
 				}
+				
+/*				yes.setSelected(false); no.setSelected(false); yes_1.setSelected(false); no_1.setSelected(false); yes_2.setSelected(false);
+				no_2.setSelected(false); yes_3.setSelected(false); no_3.setSelected(false); yes_4.setSelected(false); no_4.setSelected(false);
+				RButton_1.setSelected(false); RButton_2.setSelected(false); RButton_3.setSelected(false); RButton_4.setSelected(false);
+				RButton_5.setSelected(false); RButton_6.setSelected(false); RButton_7.setSelected(false); RButton_8.setSelected(false);
+				RButton_9.setSelected(false); RButton_10.setSelected(false); RButton_11.setSelected(false); RButton_12.setSelected(false);
+				*/
+				
 			}
 		});
-		
-		
-		
+
 	}
-	public void rbCheck(JRadioButton obj) {	//라디오버튼 getText
-		if(obj.getText() == "네")
-			pass = 1;
-		else if (obj.getText() == "아니오")
-			pass = 0;
-	}
+	
 }
