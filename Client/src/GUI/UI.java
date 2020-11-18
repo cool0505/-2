@@ -31,8 +31,6 @@ public class UI {
 	 * 아이디 = UserID
 	 * 비밀번호 = UserPW
 	 * 
-	 * 아이디 중복  확인 = idCheck (중복되는 아이디 없으면 1 / 있으면 0)
-	 * 
 	 * UI에서 필요한 값
 	 * 로그인 결과 = LoginResult (성공 1 / 실패  0)
 	 * 회원가입 결과 = SignUpResult (성공 1 / 실패 0)
@@ -43,7 +41,6 @@ public class UI {
 	String UserPw = null;
 	String LoginResult = "0";
 	String SignUpResult = "0";
-	int idCheck = 0;
 
 	int check = 0;
 	
@@ -156,14 +153,6 @@ public class UI {
 		signUp_Button.setFont(new Font("굴림", Font.BOLD, 17));
 		signUp_panel.add(signUp_Button);
 		
-		JButton idCheck_Button = new JButton("중복확인");
-		idCheck_Button.setForeground(Color.WHITE);
-		idCheck_Button.setFont(new Font("굴림", Font.BOLD, 17));
-		idCheck_Button.setBackground(new Color(0, 102, 153));
-		idCheck_Button.setBounds(362, 162, 123, 40);
-		signUp_panel.add(idCheck_Button);
-		signUp_panel.setVisible(false);
-		
 		//로그인 패널
 		login_panel = new JPanel();
 		login_panel.setBackground(Color.WHITE);
@@ -259,28 +248,6 @@ public class UI {
 			}
 		});
 		
-		//아이디 중복 여부를 체크하는 버튼을 눌렀을 때
-		idCheck_Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				UserId = id_textField_1.getText();
-				
-				if(UserId.length() > 0) {  //아이디를 입력한 경우
-					if(idCheck == 0) {  //아이디가 존재하는 경우
-						JOptionPane.showMessageDialog(dialog, "사용할 수 없는 아이디입니다.");
-						
-						id_textField_1.setText(null);
-						id_textField_1.requestFocus();
-					} else {	//중복되는 아이디가 없는 경우
-						JOptionPane.showMessageDialog(dialog, "사용 가능한 아이디입니다.");
-					}
-				} else {
-					JOptionPane.showMessageDialog(dialog, "아이디를 입력해주세요.");
-					id_textField_1.requestFocus();
-				}
-			}			
-		});
-		
 		//회원가입 정보를 입력하고 회원가입 버튼을 눌렀을 때
 		signUp_Button.addActionListener(new ActionListener() {
 			@Override
@@ -314,10 +281,6 @@ public class UI {
 					signUp_panel.setVisible(false);
 					setTextField(id_textField, "비밀번호");
 					setTextField(pw_textField, "비밀번호");
-				} else {
-					if(idCheck == 0) {	//아이디가 이미 존재할 경우
-						JOptionPane.showMessageDialog(null, "동일한 아이디가 존재합니다.");
-					}
 				}
 			}
 		});
