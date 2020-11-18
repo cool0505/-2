@@ -54,15 +54,15 @@ public class arraylist_user {
 			String[] tokens = receiveString.split("/");
 
 			// 학생증에서 도출한 학번을 받은 경우
-			if (tokens.length == 1)
+			if (tokens[0] == "1")
 				System.out.println(tokens[0]);
 			
 			// 로그인 시, 아이디와 비밀번호를 받은 경우
-			if (tokens.length == 2) {
+			else if (tokens[0] == "2") {
 				for (int i = 0; i < list.size(); i++) {
 					
 					// 회원가입 시 입력한 데이터와 로그인 시 입력한 데이터가 동일
-					if (tokens[0].equals(list.get(i).getID()) == true && tokens[1].equals(list.get(i).getPW()) == true) {
+					if (tokens[1].equals(list.get(i).getID()) == true && tokens[2].equals(list.get(i).getPW()) == true) {
 						
 						// login 클래스로 전달
 						login.insert_login(receiveString);
@@ -82,9 +82,9 @@ public class arraylist_user {
 			}
 			
 			// 회원가입 시, 기존의 다른 사용자와 학번이나 아이디가 동일할 경우
-			if (tokens.length == 4) {
+			else if (tokens[0] == "3") {
 				for (int i = 0; i < list.size(); i++) {
-					if (tokens[0].equals(list.get(i).getClassof()) == true || tokens[2].equals(list.get(i).getID()) == true) {
+					if (tokens[1].equals(list.get(i).getClassof()) == true || tokens[3].equals(list.get(i).getID()) == true) {
 						message = "0";
 						send.set_message(message);
 						this.state = 1;

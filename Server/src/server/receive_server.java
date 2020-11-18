@@ -30,7 +30,7 @@ public class receive_server extends Thread{
 				
 				receiveString = buffer.readLine();
 				
-				if(receiveString == "exit") {
+				if(receiveString == null) {   // 추후에 수정하기
 					System.out.println("connect exit");
 					break;
 				}

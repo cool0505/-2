@@ -30,8 +30,8 @@ public class login {
 
 			// INSERT 문을 사용해 login DB의 user_login 테이블에 데이터 저장
 			// 저장 데이터 -> 아이디, 비밀번호, 날짜
-			r = stmt.executeUpdate("insert into user_login" + "(ID, PW, Date) value ('" + tokens[0] + "','"
-					+ tokens[1] + "','" + now + "')");
+			r = stmt.executeUpdate("insert into user_login" + "(ID, PW, Date) value ('" + tokens[1] + "','"
+					+ tokens[2] + "','" + now + "')");
 
 			if (r == 1)   // 저장 성공
 				System.out.println(">>User login\n");

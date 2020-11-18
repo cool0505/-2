@@ -34,15 +34,15 @@ public class sign_up {
 
 			// INSERT 문을 사용해 sign_up DB의 user_signup 테이블에 데이터 저장
 			// 저장 데이터 -> 학번, 이름, 아이디, 비밀번호, 날짜
-			r1 = stmt1.executeUpdate("insert into user_signup" + "(Classof, Name, ID, PW, Date) value ('" + tokens[0]
-					+ "','" + tokens[1] + "','" + tokens[2] + "','" + tokens[3] + "','" + now + "')");
+			r1 = stmt1.executeUpdate("insert into user_signup" + "(Classof, Name, ID, PW, Date) value ('" + tokens[1]
+					+ "','" + tokens[2] + "','" + tokens[3] + "','" + tokens[4] + "','" + now + "')");
 
 			if (r1 == 1) {   // 저장 성공
 				System.out.println("\n>>User " + tokens[2] + " Sign up\n");
 				
 				// CREATE 문으로 sign_up DB에 유저의 아이디를 이름으로 하는 테이블 생성
 				// 저장될 데이터 -> 건물(출입을 시도한), 출입 여부, 날짜
-				String sql = "CREATE TABLE sign_up." + tokens[2] + " ("
+				String sql = "CREATE TABLE sign_up." + tokens[3] + " ("
 						+ "Building VARCHAR(45),"
 						+ "Status INTEGER,"
 						+ "Date VARCHAR(45)"
@@ -51,7 +51,7 @@ public class sign_up {
 				r2 = stmt2.executeUpdate(sql);
 				
 				if (r2 == 0)   // 생성 성공
-					System.out.println(">>Create user " + tokens[2] + " table\n");
+					System.out.println(">>Create user " + tokens[3] + " table\n");
 				else   // 생성 실패
 					System.out.println(">>fail");
 			}
