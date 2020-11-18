@@ -9,32 +9,12 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class send_server {//extends Thread {
+// 클라이언트에 데이터를 송신하는 클래스
+// receive_server 클래스와 달리, 전달 하고자 할 때만 동작 (무한 반복 x)
+public class send_server {
 
-	String message = "0";
-/*
-	@Override
-	public void run() {
+	String message = "0";   // 송신할 데이터를 저장하는 변수
 
-		super.run();
-
-		try {
-			BufferedReader buffer = new BufferedReader(new InputStreamReader(System.in));
-			PrintWriter print = new PrintWriter(s_socket.getOutputStream());
-
-			while (true) {
-
-				// message = buffer.readLine();
-				if (message != null) {
-					// System.out.println(message);
-					print.println(message);
-					print.flush();
-				}
-			}
-		} catch (IOException e) {
-		}
-	}
-*/
 	public void set_message(String message) {
 		
 
@@ -53,11 +33,6 @@ public class send_server {//extends Thread {
 			print.flush();
 			
 			System.out.println("> Send!\n");
-			/*os = Server.socket.getOutputStream(); 
-			osw = new OutputStreamWriter(os); 
-			bw = new BufferedWriter(osw); 
-			bw.write(message);
-			bw.flush();*/
 
 		} catch (IOException e) {
 		}

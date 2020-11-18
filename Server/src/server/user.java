@@ -1,5 +1,6 @@
 package server;
 
+// DB에서 불러온 데이터를 설정하는 클래스
 public class user {
 
 	
@@ -8,6 +9,7 @@ public class user {
 	String id;
 	String pw;
 	
+	// 학번
 	public String getClassof() {
 		return name;
 	}
@@ -15,13 +17,16 @@ public class user {
 		this.classof = classof;
 	}
 	
+	// 이름
 	public String getName() {
+		
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
 	
+	// 아이디
 	public String getID() {
 		return id;
 	}
@@ -29,6 +34,7 @@ public class user {
 		this.id = id;
 	}
 	
+	// 비밀번호
 	public String getPW() {
 		return pw;
 	}

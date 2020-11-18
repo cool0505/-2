@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
+// 클라이언트로부터 데이터를 받는 클래스
 public class receive_server extends Thread{
 	
 	login login = new login();
@@ -25,11 +26,11 @@ public class receive_server extends Thread{
 			
 			String receiveString;
 			
-			while(true) {
+			while(true) {   // 무한 반복으로 데이터 수신을 기다림
 				
 				receiveString = buffer.readLine();
 				
-				if(receiveString == null) {
+				if(receiveString == "exit") {
 					System.out.println("connect exit");
 					break;
 				}
