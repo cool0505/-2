@@ -23,6 +23,9 @@ import javax.swing.JPasswordField;
 import java.awt.SystemColor;
 import java.awt.Color;
 
+/*
+ * 로그인, 회원가입 GUI
+ * */
 public class UI {
 	/* 
 	 * 사용자가 로그인/회원가입할 때 입력한 값
@@ -61,7 +64,7 @@ public class UI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {			
 				try {
-//					socket = new Socket("localhost", 8282);
+					socket = new Socket("localhost", 8282);
 					UI window = new UI();
 					window.frame.setVisible(true);
 					
@@ -195,6 +198,7 @@ public class UI {
 		login_Label.setFont(new Font("굴림", Font.BOLD, 17));
 		login_Label.setBounds(0, 0, 262, 51);
 		login_panel.add(login_Label);
+		login_panel.setVisible(false);
 		
 		signUpPage_Button.addActionListener(new ActionListener() {
 			@Override
@@ -225,7 +229,7 @@ public class UI {
 					InputStreamReader ISR = new InputStreamReader(socket.getInputStream());
 
 					PrintWriter print = new PrintWriter(socket.getOutputStream());
-					String sendstring = UserId + "/" + UserPw;
+					String sendstring = "2/" + UserId + "/" + UserPw;
 					
 					print.println(sendstring);
 					print.flush();
@@ -243,7 +247,6 @@ public class UI {
 					
 					setTextField(id_textField, "아이디");
 					setTextField(pw_textField, "비밀번호");
-					
 				}
 			}
 		});
@@ -261,7 +264,7 @@ public class UI {
 				try {
 					BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					PrintWriter print = new PrintWriter(socket.getOutputStream());
-					String sendstring = UserNum + "/" + UserName + "/" + UserId + "/" + UserPw;
+					String sendstring = "3/" + UserNum + "/" + UserName + "/" + UserId + "/" + UserPw;
 					
 					print.println(sendstring);
 					print.flush();
@@ -279,7 +282,7 @@ public class UI {
 					JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
 					login_panel.setVisible(true);
 					signUp_panel.setVisible(false);
-					setTextField(id_textField, "비밀번호");
+					setTextField(id_textField, "아이디");
 					setTextField(pw_textField, "비밀번호");
 				}
 			}
