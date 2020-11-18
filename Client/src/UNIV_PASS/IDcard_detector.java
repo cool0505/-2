@@ -1,14 +1,12 @@
 package UNIV_PASS;
 
-import java.awt.FlowLayout;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -20,7 +18,6 @@ import javax.swing.JPanel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
@@ -32,10 +29,15 @@ import org.opencv.objdetect.CascadeClassifier;
 import org.opencv.videoio.VideoCapture;
 
 import net.sourceforge.tess4j.Tesseract;
+class frame2 extends JFrame{
+	private Image background=new ImageIcon("C:\\Users\\admin\\Desktop\\UNIVPASS.jpg").getImage();
+	public void paint(Graphics g) {//그리는 함수
+		g.drawImage(background, 0, 0, null);//background를 그려줌
+	}
+}
 public class IDcard_detector {
  
-	static JFrame frame;
-	static JFrame frame2;
+	static frame2 frame;
 	static JLabel lbl;
 	static JLabel lbl2;
 	static JPanel pn1;
@@ -46,6 +48,7 @@ public class IDcard_detector {
 	static ImageIcon icon2;
 	static Tesseract instance = Tesseract.getInstance();
 	static float sum;
+
 	public static String process (String fileName) {
 		// TODO Auto-generated method stub
 		File inputFile =new File(fileName);
@@ -194,6 +197,7 @@ public class IDcard_detector {
 	
 	private static void ResizeImage(Mat asd) {
 		Mat last= new Mat();
+		// Rect rectCrop=new Rect(new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height));
 		String result ="";
 		try {
 			Imgproc.resize(asd,last,new Size(1200,1200));
@@ -214,11 +218,15 @@ public class IDcard_detector {
   	
 
 	public static void PencereHazirla() {
-		frame = new JFrame();
+		frame = new frame2();
 		frame.getContentPane().setLayout(null);
-		frame.setSize(2000, 1200);
+		frame.setSize(1200, 610);
 		frame.setVisible(true);
+		frame.setLayout(null);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(null); 		   // 이렇게 컬러값을 생성 후     // 센 백그라운드에 넣어준다		  
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);  
 	}
 
 	/**
@@ -238,9 +246,10 @@ public class IDcard_detector {
 						
 		}
 		lbl = new JLabel(new ImageIcon(img2));
-
+		lbl.setOpaque(true); 
+		lbl.setBackground(Color.BLACK);
 		lbl.setLayout(null);
-		lbl.setBounds(100, 170, 800, 800);
+		lbl.setBounds(28, 80, 645, 385);
 
 
 
@@ -264,7 +273,7 @@ public class IDcard_detector {
 		lbl2 = new JLabel(new ImageIcon(img3));}
 		catch(NullPointerException e){}
 		lbl2.setLayout(null);
-		lbl2.setBounds(1000, 170, 300, 300);
+		lbl2.setBounds(700, 41, 450, 270);
 
 		frame.getContentPane().add(lbl2);
         
