@@ -1,6 +1,7 @@
 package UNIV_PASS;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -36,7 +37,7 @@ import org.opencv.videoio.VideoCapture;
 
 import net.sourceforge.tess4j.Tesseract;
 class frame2 extends JFrame{
-	private Image background=new ImageIcon("C:\\Users\\admin\\Desktop\\UNIVPASS.jpg").getImage();
+	private Image background=new ImageIcon("C:\\Users\\admin\\Desktop\\UNIVPASS1.jpg").getImage();
 	public void paint(Graphics g) {//그리는 함수
 		g.drawImage(background, 0, 0, null);//background를 그려줌
 	}
@@ -44,6 +45,7 @@ class frame2 extends JFrame{
 public class IDcard_detector {
 	static String[] strcomp = new String[2]; 
 	static int count=0;
+	static int timer=0;
 	static Socket socket;
 	static frame2 frame;
 	static JLabel lbl;
@@ -115,6 +117,8 @@ public class IDcard_detector {
 				}*/
 				for (Rect rect : faces.toArray()) {
 					if((sum=rect.width+rect.height)>600) {
+				  		lbl3.setFont(new Font("굴림",Font.BOLD,30));
+				  		lbl3.setText("학생증을 인식해주세요");
 						System.out.println(rect.width+rect.height);
 						Imgproc.putText(frameCapture, "STUDENT ID CARD", new Point(rect.x,rect.y+55), 1, 2, new Scalar(0,100,100));								
 						Imgproc.rectangle(frameCapture, new Point(rect.x, rect.y+50), new Point(rect.x + rect.width, rect.y + rect.height-50),
@@ -238,9 +242,34 @@ public class IDcard_detector {
 		               
 		            String LoginResult = buffer.readLine();
 		            System.out.println(LoginResult);
-		            lbl3.setText(LoginResult);
-		            Thread.sleep(3000);
-		            lbl3.setText("학생증을 인식해주세요");
+		            if(LoginResult.equals("일치하는 회원정보가 없습니다.")) {
+		            	lbl3.setFont(new Font("굴림",Font.BOLD,25));
+			            lbl3.setBackground(new Color (247,94,94));
+			            lbl3.setText(" "+LoginResult);
+			            Thread.sleep(1000);
+		            	lbl3.setText(" "+LoginResult+"3초");
+		            	Thread.sleep(1000);
+		            	lbl3.setText(" "+LoginResult+"2초");
+		            	Thread.sleep(1000);
+		            	lbl3.setText(" "+LoginResult+"1초");
+		            	Thread.sleep(1000);
+		            }
+		            else{
+		            	lbl3.setFont(new Font("굴림",Font.BOLD,30));
+		            	lbl3.setBackground(new Color (54,175,103));
+		            	lbl3.setText(LoginResult);
+		            	Thread.sleep(1000);
+		            	lbl3.setText(LoginResult+"3초");
+		            	Thread.sleep(1000);
+		            	lbl3.setText(LoginResult+"2초");
+		            	Thread.sleep(1000);
+		            	lbl3.setText(LoginResult+"1초");
+		            	Thread.sleep(1000);
+		            }
+		            lbl3.setFont(new Font("굴림",Font.BOLD,30));
+		            lbl3.setBackground(Color.BLACK);
+		      		lbl3.setForeground(Color.WHITE);
+		            lbl3.setText("  학생증을 인식해주세요");
 
 		            count=0;
 		            strcomp[0]=null;
@@ -282,11 +311,14 @@ public class IDcard_detector {
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null); 		   // 이렇게 컬러값을 생성 후     // 센 백그라운드에 넣어준다		  
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		lbl3 = new JLabel("학생증을 인식해주세요");
+		lbl3 = new JLabel();
         lbl3.setLayout(null);
-  		lbl3.setBounds(700, 335, 450, 270);
+        lbl3.setOpaque(true);
+  		lbl3.setBounds(700, 335, 450, 150);
   		frame.getContentPane().add(lbl3);
+  		lbl3.setFont(new Font("굴림",Font.BOLD,30));
+  		lbl3.setForeground(Color.WHITE);
+ 		lbl3.setBackground(Color.BLACK);
   		lbl3.setVisible(true);
 	}
 
@@ -306,6 +338,16 @@ public class IDcard_detector {
 		catch(ArrayIndexOutOfBoundsException e){
 						
 		}
+ 		if(timer%15<5) {
+ 			lbl3.setText("학생증을 인식해주세요.");
+ 		}
+ 		else if(timer%15<10) {
+ 			lbl3.setText("학생증을 인식해주세요..");
+ 		}
+ 		else {
+ 			lbl3.setText("학생증을 인식해주세요...");
+ 		}
+ 		timer++;
 		lbl = new JLabel(new ImageIcon(img2));
 
 		lbl.setOpaque(true); 
@@ -328,6 +370,8 @@ public class IDcard_detector {
 		try {
 		lbl2 = new JLabel(new ImageIcon(img3));}
 		catch(NullPointerException e){}
+		lbl2.setOpaque(true); 
+		lbl2.setBackground(Color.BLACK);
 		lbl2.setLayout(null);
 		lbl2.setBounds(700, 41, 450, 270);
 
