@@ -1,5 +1,10 @@
 package server;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,6 +20,8 @@ public class arraylist_user {
 	Statement stmt = null;
 	ResultSet r;
 	String message = "1";
+	String num_data = null;
+	static int s = 0;
 	int state = 0;
 	
 	//receive_server 클래스에서 String 전달받음
@@ -35,13 +42,13 @@ public class arraylist_user {
 			stmt = conn.createStatement();
 			
 			// SELECT문을 사용해 sign_up 테이블에서 데이터 가져오기
-			r = stmt.executeQuery("SELECT Classof, Name, ID, PW FROM user_signup");
+			r = stmt.executeQuery("SELECT StudentNum, Name, ID, PW FROM user_signup");
 
 			//DB에서 가져온 데이터를 list에 저장
 			while (r.next()) {
 				user user = new user();
-				user.setClassof(r.getString("Classof"));
-				user.setID(r.getString("Name"));
+				user.setStudentNum(r.getString("StudentNum"));
+				user.setName(r.getString("Name"));
 				user.setID(r.getString("ID"));
 				user.setPW(r.getString("PW"));
 				list.add(user);
@@ -54,11 +61,40 @@ public class arraylist_user {
 			String[] tokens = receiveString.split("/");
 
 			// 학생증에서 도출한 학번을 받은 경우
-			if (tokens[0] == "1")
-				System.out.println(tokens[0]);
+			if (tokens[0].equals("1")) {
+				
+				OutputStream os = null; 
+				OutputStreamWriter osw = null; 
+				BufferedWriter bw = null;
+
+				System.out.println("> Student Number : " + tokens[1]);
+				
+				for(int i=0; i<list.size();i++) {
+				//	System.out.println(list.get(i).getClassof());
+					if(tokens[1].equals(list.get(i).getStudentNum()) == true) {
+						num_data = list.get(i).getName() + "님 환영합니다.";
+						s = 1;
+					}
+				}
+				
+				if(s == 0)
+					num_data = "일치하는 회원정보가 없습니다.";
+				
+				try {
+
+					PrintWriter print = new PrintWriter(Server.socket.getOutputStream());
+
+					print.println(num_data);
+					print.flush();
+					
+					System.out.println("> Student Number Data Send!\n");
+
+				} catch (IOException e) {
+				}	
+			}
 			
 			// 로그인 시, 아이디와 비밀번호를 받은 경우
-			else if (tokens[0] == "2") {
+			else if (tokens[0].equals("2")) {
 				for (int i = 0; i < list.size(); i++) {
 					
 					// 회원가입 시 입력한 데이터와 로그인 시 입력한 데이터가 동일
@@ -82,9 +118,9 @@ public class arraylist_user {
 			}
 			
 			// 회원가입 시, 기존의 다른 사용자와 학번이나 아이디가 동일할 경우
-			else if (tokens[0] == "3") {
+			else if (tokens[0].equals("3")) {
 				for (int i = 0; i < list.size(); i++) {
-					if (tokens[1].equals(list.get(i).getClassof()) == true || tokens[3].equals(list.get(i).getID()) == true) {
+					if (tokens[1].equals(list.get(i).getStudentNum()) == true || tokens[3].equals(list.get(i).getID()) == true) {
 						message = "0";
 						send.set_message(message);
 						this.state = 1;

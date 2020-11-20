@@ -27,23 +27,28 @@ public class receive_server extends Thread{
 			String receiveString;
 			
 			while(true) {   // 무한 반복으로 데이터 수신을 기다림
-				
-				receiveString = buffer.readLine();
-				
-				if(receiveString == null) {   // 추후에 수정하기
-					System.out.println("connect exit");
-					break;
-				}
-				
-				else {
-					System.out.println(receiveString);
+				try {
+					receiveString = buffer.readLine();
 					
-					array.list(receiveString);
+					if(receiveString == "exit") {   // 추후에 수정하기
+						System.out.println("server exit");
+				//		break;
+					}
+					
+					else {
+						System.out.println(receiveString);
+						
+						array.list(receiveString);
+					}	
+				}catch(IOException e) {
+					//System.out.println("error1");
 				}
 			}
 			
-			buffer.close();
-		}catch(IOException e) {}
+		//	buffer.close();
+		}catch(IOException e) {
+			System.out.println("error2");
+		}
 	}
 	
 	public void setSocket(Socket socket) {

@@ -4,17 +4,17 @@ package server;
 public class user {
 
 	
-	String classof;
+	String studentnum;
 	String name;
 	String id;
 	String pw;
 	
 	// 학번
-	public String getClassof() {
-		return name;
+	public String getStudentNum() {
+		return studentnum;
 	}
-	public void setClassof(String classof) {
-		this.classof = classof;
+	public void setStudentNum(String studentnum) {
+		this.studentnum = studentnum;
 	}
 	
 	// 이름
