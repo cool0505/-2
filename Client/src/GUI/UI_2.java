@@ -18,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Toolkit;
 
 /*
  * 관리자 GUI
@@ -102,6 +103,7 @@ public class UI_2 {
 	public void initialize() {
 		//프레임 설정
 		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\User\\eclipse-workspace\\Project\\Logo.JPG"));
 		frame.setTitle("UNIV-PASS");
 		frame.setBounds(100, 100, 550, 520);
 		frame.setLocationRelativeTo(null);
@@ -1114,9 +1116,10 @@ public class UI_2 {
 			} else if(EditResult.equals("0")) {
 					JOptionPane.showMessageDialog(dialog, "변경 실패");
 			}
+
 			AddResult = "0";
 			EditResult = "0";
 		}
-
+		
 	}
 }

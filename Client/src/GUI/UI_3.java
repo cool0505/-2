@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Toolkit;
 
 /*
  * 사용자 GUI
@@ -63,6 +64,7 @@ public class UI_3 {
 		
 		//프레임 설정
 		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\User\\eclipse-workspace\\Project\\Logo.JPG"));
 		frame.setTitle("UNIV-PASS");
 		frame.setBounds(100, 100, 380, 664);
 		frame.setLocationRelativeTo(null);
