@@ -11,14 +11,18 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 //클라이언트로부터 전달받은 데이터를 검수하고 sign_up, login 클래스에 전달
 public class arraylist_user {
 
-	connect_signup connect = new connect_signup();
-	Statement stmt = null;
+	connect_signup connect1 = new connect_signup();
+	connect_building connect2 = new connect_building();
+	Statement stmt1 = null;
+	Statement stmt2 = null;
 	ResultSet r;
+	int r2;
 	String message = "1";
 	String num_data = null;
 	static int s = 0;
@@ -29,20 +33,22 @@ public class arraylist_user {
 
 		sign_up sign = new sign_up();
 		login login = new login();
+		Date now = new Date();
 	
 		send_server send = new send_server();
 		
-		Connection conn = connect.makeconnect();
+		Connection conn1 = connect1.makeconnect();
+		Connection conn2 = connect2.makeconnect();
 		
 		// sign_up DB의 데이터를 불러와 array list에 저장
 		ArrayList<user> list = new ArrayList<user>();
 
 		try {
 
-			stmt = conn.createStatement();
+			stmt1 = conn1.createStatement();
 			
 			// SELECT문을 사용해 sign_up 테이블에서 데이터 가져오기
-			r = stmt.executeQuery("SELECT StudentNum, Name, ID, PW FROM user_signup");
+			r = stmt1.executeQuery("SELECT StudentNum, Name, ID, PW FROM user_signup");
 
 			//DB에서 가져온 데이터를 list에 저장
 			while (r.next()) {
@@ -70,7 +76,6 @@ public class arraylist_user {
 				System.out.println("> Student Number : " + tokens[1]);
 				
 				for(int i=0; i<list.size();i++) {
-				//	System.out.println(list.get(i).getClassof());
 					if(tokens[1].equals(list.get(i).getStudentNum()) == true) {
 						num_data = list.get(i).getName() + "님 환영합니다.";
 						s = 1;
@@ -88,7 +93,19 @@ public class arraylist_user {
 					print.flush();
 					
 					System.out.println("> Student Number Data Send!\n");
-
+					
+					try {
+						
+						if(s == 1) {
+							stmt2 = conn2.createStatement();
+						
+							r2 = stmt2.executeUpdate("insert into main" + "(StudentNum, Status, Date) value ('" + tokens[1] + "','"
+									+ "1" + "','" + now + "')");
+							s = 0;
+							if (r2 == 1)   // 저장 성공
+								System.out.println("> Save Data\n");
+						}
+					}catch(SQLException e) {}
 				} catch (IOException e) {
 				}	
 			}
