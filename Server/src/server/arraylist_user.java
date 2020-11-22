@@ -78,12 +78,15 @@ public class arraylist_user {
 				for(int i=0; i<list.size();i++) {
 					if(tokens[1].equals(list.get(i).getStudentNum()) == true) {
 						num_data = list.get(i).getName() + "님 환영합니다.";
+						System.out.println("> Data Correct\n");
 						s = 1;
 					}
 				}
 				
-				if(s == 0)
+				if(s == 0) {
 					num_data = "일치하는 회원정보가 없습니다.";
+					System.out.println("> Data Incorrect\n");
+				}
 				
 				try {
 
@@ -92,7 +95,7 @@ public class arraylist_user {
 					print.println(num_data);
 					print.flush();
 					
-					System.out.println("> Student Number Data Send!\n");
+					System.out.println("> Data Send!\n");
 					
 					try {
 						
