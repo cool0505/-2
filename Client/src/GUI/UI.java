@@ -38,6 +38,7 @@ public class UI {
 	 * UI에서 필요한 값
 	 * 로그인 결과 = LoginResult (성공 1 / 실패  0)
 	 * 회원가입 결과 = SignUpResult (성공 1 / 실패 0)
+	 * 사용자모드 = UserMode (관리자 1 / 사용자 0)
 	 * */
 	String UserNum = null;
 	String UserName = null;
@@ -45,6 +46,7 @@ public class UI {
 	String UserPw = null;
 	String LoginResult = "0";
 	String SignUpResult = "0";
+	String UserMode = "0";
 
 	int check = 0;
 	
@@ -56,6 +58,9 @@ public class UI {
 	JLabel login_Label, signUp_Label;
 	JPasswordField pwField_1, pwField_2;
 	
+	UI_2 ui2 = new UI_2();
+	UI_3 ui3 = new UI_3();
+	
 	/**
 	 * Launch the application.
 	 */
@@ -66,9 +71,8 @@ public class UI {
 			public void run() {			
 				try {
 					socket = new Socket("localhost", 8282);
-					UI window = new UI();
-					window.frame.setVisible(true);
-					
+					UI ui = new UI();
+					ui.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -157,6 +161,7 @@ public class UI {
 		signUp_Button.setForeground(Color.WHITE);
 		signUp_Button.setFont(new Font("굴림", Font.BOLD, 17));
 		signUp_panel.add(signUp_Button);
+		signUp_panel.setVisible(false);
 		
 		//로그인 패널
 		login_panel = new JPanel();
@@ -200,7 +205,7 @@ public class UI {
 		login_Label.setFont(new Font("굴림", Font.BOLD, 17));
 		login_Label.setBounds(0, 0, 262, 51);
 		login_panel.add(login_Label);
-		login_panel.setVisible(false);
+//		login_panel.setVisible(false);
 		
 		signUpPage_Button.addActionListener(new ActionListener() {
 			@Override
@@ -241,9 +246,22 @@ public class UI {
 					LoginResult = buffer.readLine();
 					
 				} catch (IOException e1) {}
-
+				
+				//로그인 성공
 				if(LoginResult.equals("1")) {
 					JOptionPane.showMessageDialog(null, "로그인이 완료되었습니다.");
+					
+					//관리자 GUI로 이동
+					if(UserMode.equals("1")) {
+						frame.setVisible(false);
+						ui3.frame.setVisible(true);
+					//사용자 GUI로 이동
+					} else {
+						frame.setVisible(false);
+						ui2.frame.setVisible(true);
+					}
+					
+				//로그인 실패	
 				} else if(LoginResult.equals("0")) {
 					JOptionPane.showMessageDialog(null, "존재하지 않는 아이디이거나, 잘못된 비밀번호입니다.");
 					
