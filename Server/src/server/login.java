@@ -15,6 +15,7 @@ public class login {
 
 	connect_login connect1 = new connect_login();
 	connect_signup connect2 = new connect_signup();
+	admin ad = new admin();
 	
 	Statement stmt = null;
 	int r1;
@@ -46,8 +47,8 @@ public class login {
 
 			if (r1 == 1) { // 저장 성공
 				System.out.println(">>User login\n");
-
-				if (tokens[1].equals("administration") == false) {
+				
+				if (tokens[1].equals("admin") == false) {
 					r2 = stmt2.executeQuery("SELECT Building, Status, Date FROM " + tokens[1]);
 
 					while (r2.next()) {

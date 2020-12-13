@@ -14,9 +14,11 @@ public class admin {
 	connect_building building = new connect_building();
 	connect_bus bus = new connect_bus();
 
-	Statement stmt = null;
+	Statement stmt_building = null;
+	Statement stmt_bus = null;
+	Statement stmt_signup = null;
 	int r1;
-	ResultSet r2;
+	ResultSet r2=null;
 
 	String data[][] = new String[20][3];
 	String user[][] = new String[20][5];
@@ -35,19 +37,52 @@ public class admin {
 
 		try {
 
-			Statement stmt_building = conn_building.createStatement();
-			Statement stmt_bus = conn_bus.createStatement();
-			Statement stmt_signup = conn_signup.createStatement();
+			stmt_building = conn_building.createStatement();
+			stmt_bus = conn_bus.createStatement();
+			stmt_signup = conn_signup.createStatement();
 			sign_up signup = new sign_up();
 			Date now = new Date();
 
-			// 건물, 빌딩 DB 조회
+			System.out.println("입장2");
+			System.out.println(tokens[0]+tokens[1]+tokens[2]);
+			
+			// 건물, 빌딩, 사용자 DB 조회
 			if (tokens[1].equals("1") == true) {
-				if (tokens[2].equals("building") == true || tokens[2].equals("bus") == true) {
+				
+				// 건물 DB 조회
+				if (tokens[2].equals("1") == true) {
+					r2 = stmt_building.executeQuery("SELECT StudentNum, Status, Date FROM " + tokens[3]);
+
+					while (r2.next()) {
+
+						data[count][0] = r2.getString("StudentNum");
+						data[count][1] = r2.getString("Status");
+						data[count][2] = r2.getString("Date");
+						
+						count++;
+					}
+
+					send_data = data[0][0] + "/" + data[0][1] + "/" + data[0][2] + "/" + "-";
+
+					for (int i = 1; i < count; i++) {
+						for (int j = 0; j < 3; j++) {
+
+							send_data = send_data + data[i][j] + "/";
+							if (j == 2) {
+								send_data = send_data + "-";
+							}
+						}
+					}
+					
+					System.out.println("> Send Building Data\n");
+				}
+
+				// 버스 DB 조회
+				if (tokens[2].equals("2") == true) {
 					r2 = stmt_building.executeQuery("SELECT StudentNum, Status, Date FROM " + tokens[3]);
 					while (r2.next()) {
 
-						data[count][0] = r2.getString("StateNum");
+						data[count][0] = r2.getString("StudentNum");
 						data[count][1] = r2.getString("Status");
 						data[count][2] = r2.getString("Date");
 
@@ -65,24 +100,25 @@ public class admin {
 							}
 						}
 					}
+					System.out.println("> Send Bus Data\n");
 				}
-
 				// 사용자 DB 조회
-				if (tokens[2].equals("user") == true) {
-					r2 = stmt_building.executeQuery("SELECT StudentNum, Name, ID, PW, Date FROM " + tokens[3]);
+				if (tokens[2].equals("3") == true) {
+					
+					r2 = stmt_signup.executeQuery("SELECT StudentNum, Name, ID, PW, Date FROM user_signup;");
+					
 					while (r2.next()) {
 
-						user[count][0] = r2.getString("StateNum");
+						user[count][0] = r2.getString("StudentNum");
 						user[count][1] = r2.getString("Name");
 						user[count][2] = r2.getString("ID");
 						user[count][3] = r2.getString("PW");
 						user[count][4] = r2.getString("Date");
-
 						count++;
 					}
 
 					send_data = user[0][0] + "/" + user[0][1] + "/" + user[0][2] + "/" + user[0][3] + "/" + user[0][4] + "/" +"-";
-
+					
 					for (int i = 1; i < count; i++) {
 						for (int j = 0; j < 5; j++) {
 
@@ -92,6 +128,7 @@ public class admin {
 							}
 						}
 					}
+					System.out.println("> Send User Data\n");
 				}
 			}
 			
