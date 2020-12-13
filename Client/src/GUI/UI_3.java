@@ -14,6 +14,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.StringTokenizer;
 import javax.swing.JTable;
 import java.awt.Toolkit;
@@ -129,8 +133,16 @@ public class UI_3 {
 		enter_panel.add(enterTitle_Label);
 		
 		String[] user_headers = new String [] {"건물", "출입", "날짜"};
-		String user_info = "humanities/1/Sat Dec 12 19:14:47 KST 2020/-main/1/Sat Dec 12 19:49:03 KST 2020/-";
-
+		String user_info = "null";
+		try {
+			InputStreamReader ISR = new InputStreamReader(Socket_Saver.socket.getInputStream());
+            BufferedReader buffer = new BufferedReader(ISR);
+   
+            user_info= buffer.readLine();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		StringTokenizer token1 = new StringTokenizer(user_info, "-");
 		String[] tokens1 = user_info.split("-");
 		user_contents = new String[tokens1.length][3];
@@ -152,11 +164,11 @@ public class UI_3 {
 						user_contents[i][j] = "자연관";
 						break;
 						
-					case "":
+					case "humanities":
 						user_contents[i][j] = "인문관";
 						break;
 						
-					case "humanities":
+					case "wonhwa":
 						user_contents[i][j] = "원화관";
 						break;
 					

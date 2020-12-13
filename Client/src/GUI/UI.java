@@ -47,7 +47,6 @@ public class UI {
 	String LoginResult = "0";
 	String SignUpResult = "0";
 	String UserMode = "0";
-
 	int check = 0;
 	
 	JFrame frame;
@@ -58,19 +57,16 @@ public class UI {
 	JLabel login_Label, signUp_Label;
 	JPasswordField pwField_1, pwField_2;
 	
-	UI_2 ui2 = new UI_2();
-	UI_3 ui3 = new UI_3();
 	
 	/**
 	 * Launch the application.
 	 */
-	static Socket socket;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {			
 				try {
-					socket = new Socket("localhost", 8282);
+					Socket_Saver.socket = new Socket("192.168.1.6", 8282);
 					UI ui = new UI();
 					ui.frame.setVisible(true);
 				} catch (Exception e) {
@@ -233,9 +229,9 @@ public class UI {
 				UserPw = pw_textField.getText();
 				
 				try {
-					InputStreamReader ISR = new InputStreamReader(socket.getInputStream());
+					InputStreamReader ISR = new InputStreamReader(Socket_Saver.socket.getInputStream());
 
-					PrintWriter print = new PrintWriter(socket.getOutputStream());
+					PrintWriter print = new PrintWriter(Socket_Saver.socket.getOutputStream());
 					String sendstring = "2/" + UserId + "/" + UserPw;
 					
 					print.println(sendstring);
@@ -252,13 +248,15 @@ public class UI {
 					JOptionPane.showMessageDialog(null, "로그인이 완료되었습니다.");
 					
 					//관리자 GUI로 이동
-					if(UserId.equals("administration")) {
+					if(UserId.equals("admin")) {
 						frame.setVisible(false);
-						ui3.frame.setVisible(true);
+						UI_2 ui2 = new UI_2();
+						ui2.frame.setVisible(true);
 					//사용자 GUI로 이동
 					} else {
 						frame.setVisible(false);
-						ui2.frame.setVisible(true);
+						UI_3 ui3 = new UI_3();
+						ui3.frame.setVisible(true);
 					}
 					
 				//로그인 실패	
@@ -281,30 +279,32 @@ public class UI {
 				UserId = id_textField_1.getText();
 				UserPw = pwField_2.getText();
 				
-				try {
-					BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					PrintWriter print = new PrintWriter(socket.getOutputStream());
-					String sendstring = "3/" + UserNum + "/" + UserName + "/" + UserId + "/" + UserPw;
-					
-					print.println(sendstring);
-					print.flush();
-					
-					SignUpResult = buffer.readLine();
-					
-				} catch (IOException e1) {}
-
 				//비밀번호 입력창과 비밀번호확인 입력창의 내용이 다르면 비밀번호가 다르다는 메시지 출력
 				if(!(pwField_1.getText().contentEquals(pwField_2.getText()))) {
 					JOptionPane.showMessageDialog(null, "비밀번호 다름");
 				}
-				
-				if(SignUpResult.equals("1")) {
-					JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
-					login_panel.setVisible(true);
-					signUp_panel.setVisible(false);
-					setTextField(id_textField, "아이디");
-					setTextField(pw_textField, "비밀번호");
+				else {
+					try {
+						BufferedReader buffer = new BufferedReader(new InputStreamReader(Socket_Saver.socket.getInputStream()));
+						PrintWriter print = new PrintWriter(Socket_Saver.socket.getOutputStream());
+						String sendstring = "3/" + UserNum + "/" + UserName + "/" + UserId + "/" + UserPw;
+						
+						print.println(sendstring);
+						print.flush();
+						
+						SignUpResult = buffer.readLine();
+						
+					} catch (IOException e1) {}
+					if(SignUpResult.equals("1")) {
+						JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
+						login_panel.setVisible(true);
+						signUp_panel.setVisible(false);
+						setTextField(id_textField, "아이디");
+						setTextField(pw_textField, "비밀번호");
+					}
+
 				}
+				
 			}
 		});
 	}

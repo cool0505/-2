@@ -4,8 +4,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
 import javax.swing.JButton;
@@ -19,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import java.awt.Toolkit;
 
 /*
  * 관리자 GUI
@@ -36,7 +40,6 @@ public class UI_2 {
 	JComboBox<String> comboBox;
 	JButton search_Button;
 	JDialog dialog = new JDialog(frame);
-	
 	
 	static String[][] stud_contents;
 	static String[][] enter_contents;
@@ -257,43 +260,6 @@ public class UI_2 {
 		enter_panel.add(enter_back_Button);
 		
 		
-		String[] enter_headers = new String [] {"학번", "출입", "날짜"};
-		String enter_info = "2019243044/1/Sat Dec 12 19:14:47 KST 2020/-2019243111/1/Sat Dec 12 19:49:03 KST 2020/-";
-
-		StringTokenizer token1 = new StringTokenizer(enter_info, "-");
-		String[] tokens1 = enter_info.split("-");
-		enter_contents = new String[tokens1.length][3];
-		
-		for(int i = 0; i < tokens1.length; i++) {
-				tokens2 = tokens1[i].split("/");
-				for(int j = 0; j < 3; j++) {
-					if(j == 1) {
-						if(tokens2[j].equals("1")) {
-							enter_contents[i][j] = "PASS";
-						} else if(tokens2[j].equals("0")) {
-							enter_contents[i][j] = "FAIL";
-						}
-					} else {
-						enter_contents[i][j] = tokens2[j];
-					}
-				}
-		}
-		
-		enter_table = new JTable(enter_contents, enter_headers);
-		enter_table.setRowHeight(30);
-		enter_table.setFont(new Font("굴림", Font.PLAIN, 15));
-		enter_table.setAlignmentX(0);
-		enter_table.setEnabled(true);	 //셀 편집 가능 여부
-		enter_table.getTableHeader().setReorderingAllowed(false);	//컬럼 순서 변경 여부
-		enter_table.setAutoCreateRowSorter(true);	//정렬
-		enter_table.setSize(450,450);
-		enter_table.setPreferredScrollableViewportSize(new Dimension(450, 450));
-		
-		JScrollPane scrollPane2 = new JScrollPane(enter_table);
-		scrollPane2.setBounds(5, 100, 529, 369);
-		enter_panel.add(scrollPane2);
-		frame.getContentPane().add(enter_panel);
-		
 		JButton enterSearch_Button = new JButton("검색");
 		enterSearch_Button.setFont(new Font("굴림", Font.BOLD, 15));
 		enterSearch_Button.setBackground(Color.LIGHT_GRAY);
@@ -414,35 +380,6 @@ public class UI_2 {
 		stud_panel.setBounds(0, 0, 546, 492);
 		stud_panel.setLayout(null);
 		
-		String[] stud_headers = new String [] {"학번", "이름", "ID", "PW"};
-		String stud_info_server="20190/고주원/idd/asdfa/-20191/김후정/id2/wefgfdg/-20192/신은진/id3/dsfgn/-";
-		String stud_info = stud_info_server;
-
-		token1 = new StringTokenizer(stud_info, "-");
-		tokens1 = stud_info.split("-");
-		stud_contents = new String[tokens1.length][4];
-		
-		for(int i = 0; i < tokens1.length; i++) {
-				tokens2 = tokens1[i].split("/");
-				for(int j = 0; j < 4; j++) {
-					 stud_contents[i][j] = tokens2[j];
-				}
-		}
-		
-		stud_table = new JTable(stud_contents, stud_headers);
-		stud_table.setRowHeight(30);
-		stud_table.setFont(new Font("굴림", Font.PLAIN, 15));
-		stud_table.setAlignmentX(0);
-		stud_table.setEnabled(true);	 //셀 편집 가능 여부
-		stud_table.getTableHeader().setReorderingAllowed(false);	//컬럼 순서 변경 여부
-		stud_table.setAutoCreateRowSorter(true);	//정렬
-		stud_table.setSize(450,450);
-		stud_table.setPreferredScrollableViewportSize(new Dimension(450, 450));
-		
-		JScrollPane scrollPane = new JScrollPane(stud_table);
-		scrollPane.setBounds(5, 35, 529, 409);
-		stud_panel.add(scrollPane);
-		frame.getContentPane().add(stud_panel);
 
 		JButton search_Button = new JButton("검색");
 		search_Button.setFont(new Font("굴림", Font.BOLD, 15));
@@ -778,6 +715,48 @@ public class UI_2 {
 			public void actionPerformed(ActionEvent e) {
 				stud_panel.setVisible(true);
 				main_panel.setVisible(false);
+				String[] stud_headers = new String [] {"학번", "이름", "ID", "PW"};
+				String stud_info_server = null;
+				try {
+					String sendstring = "4/1/3";
+					InputStreamReader ISR = new InputStreamReader(Socket_Saver.socket.getInputStream());
+					PrintWriter print = new PrintWriter(Socket_Saver.socket.getOutputStream());          
+		            print.println(sendstring);
+		            print.flush();
+		            BufferedReader buffer = new BufferedReader(ISR);
+		   
+		            stud_info_server = buffer.readLine();
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				String stud_info = stud_info_server;
+
+				token1 = new StringTokenizer(stud_info, "-");
+				tokens1 = stud_info.split("-");
+				stud_contents = new String[tokens1.length][4];
+				
+				for(int i = 0; i < tokens1.length; i++) {
+						tokens2 = tokens1[i].split("/");
+						for(int j = 0; j < 4; j++) {
+							 stud_contents[i][j] = tokens2[j];
+						}
+				}
+				
+				stud_table = new JTable(stud_contents, stud_headers);
+				stud_table.setRowHeight(30);
+				stud_table.setFont(new Font("굴림", Font.PLAIN, 15));
+				stud_table.setAlignmentX(0);
+				stud_table.setEnabled(true);	 //셀 편집 가능 여부
+				stud_table.getTableHeader().setReorderingAllowed(false);	//컬럼 순서 변경 여부
+				stud_table.setAutoCreateRowSorter(true);	//정렬
+				stud_table.setSize(450,450);
+				stud_table.setPreferredScrollableViewportSize(new Dimension(450, 450));
+				
+				JScrollPane scrollPane = new JScrollPane(stud_table);
+				scrollPane.setBounds(5, 35, 529, 409);
+				stud_panel.add(scrollPane);
+				frame.getContentPane().add(stud_panel);
 			}
 		});
 
@@ -1048,7 +1027,57 @@ public class UI_2 {
 	//건물 선택 페이지에서 출입기록 페이지를 보여주는 메소드
 	public void hallButton() {			
 		hall_panel.setVisible(false);
+
+		String[] enter_headers = new String [] {"학번", "출입", "날짜"};
+		String enter_info_server = null;
+		try {
+			String sendstring = "4/1/1/humanities";
+			InputStreamReader ISR = new InputStreamReader(Socket_Saver.socket.getInputStream());
+			PrintWriter print = new PrintWriter(Socket_Saver.socket.getOutputStream());          
+            print.println(sendstring);
+            print.flush();
+            BufferedReader buffer = new BufferedReader(ISR);
+   
+            enter_info_server = buffer.readLine();
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		StringTokenizer token1 = new StringTokenizer(enter_info_server, "-");
+		String[] tokens1 = enter_info_server.split("-");
+		enter_contents = new String[tokens1.length][3];
+		
+		for(int i = 0; i < tokens1.length; i++) {
+				tokens2 = tokens1[i].split("/");
+				for(int j = 0; j < 3; j++) {
+					if(j == 1) {
+						if(tokens2[j].equals("1")) {
+							enter_contents[i][j] = "PASS";
+						} else if(tokens2[j].equals("0")) {
+							enter_contents[i][j] = "FAIL";
+						}
+					} else {
+						enter_contents[i][j] = tokens2[j];
+					}
+				}
+		}
+		
+		enter_table = new JTable(enter_contents, enter_headers);
 		enter_panel.setVisible(true);
+		
+		enter_table.setRowHeight(30);
+		enter_table.setFont(new Font("굴림", Font.PLAIN, 15));
+		enter_table.setAlignmentX(0);
+		enter_table.setEnabled(true);	 //셀 편집 가능 여부
+		enter_table.getTableHeader().setReorderingAllowed(false);	//컬럼 순서 변경 여부
+		enter_table.setAutoCreateRowSorter(true);	//정렬
+		enter_table.setSize(450,450);
+		enter_table.setPreferredScrollableViewportSize(new Dimension(450, 450));
+		
+		JScrollPane scrollPane2 = new JScrollPane(enter_table);
+		scrollPane2.setBounds(5, 100, 529, 369);
+		enter_panel.add(scrollPane2);
+		frame.getContentPane().add(enter_panel);
 	}
 	
 	
