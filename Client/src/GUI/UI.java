@@ -252,7 +252,7 @@ public class UI {
 					JOptionPane.showMessageDialog(null, "로그인이 완료되었습니다.");
 					
 					//관리자 GUI로 이동
-					if(UserMode.equals("1")) {
+					if(UserId.equals("administration")) {
 						frame.setVisible(false);
 						ui3.frame.setVisible(true);
 					//사용자 GUI로 이동
