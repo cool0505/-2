@@ -14,14 +14,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.StringTokenizer;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import java.awt.Toolkit;
 
 /*
  * 사용자 GUI
  * 출입기록 확인, 문진표 작성
- * 문진표 작성 시, 아니요 또는 의심 증상이 하나라도 있으면 출입 불가
+ * 문진표 작성 시, 아니요 또는 의심 증상이 하나라도 있으면 출입 불가(pass = fail)
  * */
 
 public class UI_3 {
@@ -29,11 +29,15 @@ public class UI_3 {
 	JFrame frame;
 	JPanel main_panel, enter_panel, write_panel_1, write_panel_2;
 	JTable table;
-	DefaultTableModel model;
+	
+	static String[][] user_contents;
+	static String[] tokens2;
+	static String[] tokens;
 	
 	//출입 = pass (가능 1, 불가능 0)
 	String pass = "0";
 	
+
 	/**
 	 * Launch the application.
 	 */
@@ -60,6 +64,7 @@ public class UI_3 {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
 	private void initialize() {
 		
 		//프레임 설정
@@ -106,6 +111,7 @@ public class UI_3 {
 		pass_Label.setHorizontalAlignment(SwingConstants.CENTER);
 		pass_Label.setBounds(81, 65, 214, 66);
 		main_panel.add(pass_Label);
+		pass_Label.setVisible(false);
 		
 		/*
 		 * 출입기록 페이지 (enter_panel)
@@ -122,15 +128,68 @@ public class UI_3 {
 		enterTitle_Label.setBounds(15, 16, 349, 27);
 		enter_panel.add(enterTitle_Label);
 		
-		String[] headers = new String [] {"날짜", "장소", "출입"};
-		DefaultTableModel model = new DefaultTableModel(headers, 0) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+		String[] user_headers = new String [] {"건물", "출입", "날짜"};
+		String user_info = "humanities/1/Sat Dec 12 19:14:47 KST 2020/-main/1/Sat Dec 12 19:49:03 KST 2020/-";
+
+		StringTokenizer token1 = new StringTokenizer(user_info, "-");
+		String[] tokens1 = user_info.split("-");
+		user_contents = new String[tokens1.length][3];
 		
-		table = new JTable(model);
+		for(int i = 0; i < tokens1.length; i++) {
+			tokens2 = tokens1[i].split("/");
+			for(int j = 0; j < 3; j++) {
+				if(j == 0) {
+					switch (tokens2[j]) {
+					case "main":
+						user_contents[i][j] = "본관";
+						break;
+					
+					case "engineering":
+						user_contents[i][j] = "공학관";
+						break;
+						
+					case "natural_science":
+						user_contents[i][j] = "자연관";
+						break;
+						
+					case "":
+						user_contents[i][j] = "인문관";
+						break;
+						
+					case "humanities":
+						user_contents[i][j] = "원화관";
+						break;
+					
+					case "health_care":
+						user_contents[i][j] = "보건관";
+						break;
+						
+					case "library":
+						user_contents[i][j] = "도서관";
+						break;
+						
+					case "student":
+						user_contents[i][j] = "학생회관";
+						break;	
+					
+					case "sports_science":
+						user_contents[i][j] = "스포츠관";
+						break;
+					}
+					
+				} else if(j == 1) {
+					if(tokens2[j].equals("1")) {
+						user_contents[i][j] = "PASS";
+					} else if(tokens2[j].equals("0")) {
+						user_contents[i][j] = "FAIL";
+					}
+				} else {
+					user_contents[i][j] = tokens2[j];
+				}
+			}
+		}
+		
+		table = new JTable(user_contents, user_headers);
 		table.setRowHeight(30);
 		table.setFont(new Font("굴림", Font.PLAIN, 15));
 		table.setAlignmentX(0);
@@ -446,7 +505,6 @@ public class UI_3 {
 			}
 		});
 		
-
 		writeNext_Button_2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -462,25 +520,18 @@ public class UI_3 {
 					
 					pass = "1";
 				}
-				
-				
+
 				if(pass.equals("1")) {
+					pass_Label.setText("PASS");
 					pass_Label.setForeground(Color.GREEN);
 					pass = "0";
+					pass_Label.setVisible(true);
 				} else {
+					pass_Label.setText("FAIL");
 					pass_Label.setForeground(Color.RED);
+					pass_Label.setVisible(true);
 				}
-				
-/*				yes.setSelected(false); no.setSelected(false); yes_1.setSelected(false); no_1.setSelected(false); yes_2.setSelected(false);
-				no_2.setSelected(false); yes_3.setSelected(false); no_3.setSelected(false); yes_4.setSelected(false); no_4.setSelected(false);
-				RButton_1.setSelected(false); RButton_2.setSelected(false); RButton_3.setSelected(false); RButton_4.setSelected(false);
-				RButton_5.setSelected(false); RButton_6.setSelected(false); RButton_7.setSelected(false); RButton_8.setSelected(false);
-				RButton_9.setSelected(false); RButton_10.setSelected(false); RButton_11.setSelected(false); RButton_12.setSelected(false);
-				*/
-				
 			}
 		});
-
 	}
-	
 }
