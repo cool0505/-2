@@ -9,7 +9,7 @@ public class Server {
 
 	// 소켓 생성 -> 객체 생성해서 전달할 필요 없음 (Server.socket)
 	static Socket socket;   // 주원
-	static Socket socketB;   //은진
+//	static Socket socketB;   //은진
 
 	public static void main(String[] args) {
 

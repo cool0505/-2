@@ -19,12 +19,12 @@ public class arraylist_user {
 
 	connect_signup connect1 = new connect_signup();
 	connect_building connect2 = new connect_building();
-	admin ad = new admin();
 	
 	Statement stmt1 = null;
 	Statement stmt2 = null;
 	ResultSet r;
 	int r2;
+	int r3;
 	String message = "1";
 	String num_data = null;
 	static int s = 0;
@@ -36,6 +36,7 @@ public class arraylist_user {
 		sign_up sign = new sign_up();
 		login login = new login();
 		Date now = new Date();
+		admin ad = new admin();
 	
 		send_server send = new send_server();
 		
@@ -106,6 +107,15 @@ public class arraylist_user {
 						
 							r2 = stmt2.executeUpdate("insert into humanities" + "(StudentNum, Status, Date) value ('" + tokens[1] + "','"
 									+ "1" + "','" + now + "')");
+
+							for(int i=0; i<list.size(); i++) {
+								System.out.println("dlqwd");
+								if(tokens[1].equals(list.get(i).getStudentNum()) == true) {
+									System.out.println("wow");
+									r3 = stmt1.executeUpdate("insert into " + list.get(i).getID() + "(Building, Status, Date) value ('humanities" + "','"
+											+ "1" + "','" + now + "')");
+								}
+							}
 							s = 0;
 							if (r2 == 1)   // 저장 성공
 								System.out.println("> Save Data\n");
@@ -116,7 +126,7 @@ public class arraylist_user {
 			}
 			
 			// 로그인 시, 아이디와 비밀번호를 받은 경우
-			else if (tokens[0].equals("2")) {
+			else if (tokens[0].equals("2")==true) {
 				for (int i = 0; i < list.size(); i++) {
 					
 					// 회원가입 시 입력한 데이터와 로그인 시 입력한 데이터가 동일
@@ -160,7 +170,7 @@ public class arraylist_user {
 				this.state = 0;
 			}
 			
-			else if (tokens[0].equals("4"))
+			else if(tokens[0].equals("4")==true)
 				ad.work(receiveString);
 
 		} catch (SQLException e) {
