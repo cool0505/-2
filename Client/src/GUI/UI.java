@@ -1,7 +1,5 @@
 package Gui;
 
-import LOGIN.*;
-
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -16,20 +14,19 @@ import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import javax.swing.JPasswordField;
 import java.awt.SystemColor;
-import java.awt.Choice;
 import java.awt.Color;
+import java.awt.Toolkit;
 
+/*
+ * 로그인, 회원가입 GUI
+ * */
 public class UI {
 	/* 
 	 * 사용자가 로그인/회원가입할 때 입력한 값
@@ -38,11 +35,10 @@ public class UI {
 	 * 아이디 = UserID
 	 * 비밀번호 = UserPW
 	 * 
-	 * 아이디 중복  확인 = idCheck (중복되는 아이디 없으면 1 / 없으면 0)
-	 * 
 	 * UI에서 필요한 값
-	 * 로그인 결과 = LoginResult (성공 1 / 아이디 잘못 입력한 경우 0 / 비밀번호 잘못 입력한 경우 -1)
+	 * 로그인 결과 = LoginResult (성공 1 / 실패  0)
 	 * 회원가입 결과 = SignUpResult (성공 1 / 실패 0)
+	 * 사용자모드 = UserMode (관리자 1 / 사용자 0)
 	 * */
 	String UserNum = null;
 	String UserName = null;
@@ -50,32 +46,21 @@ public class UI {
 	String UserPw = null;
 	String LoginResult = "0";
 	String SignUpResult = "0";
-	int idCheck = 0;
+	String UserMode = "0";
 
 	int check = 0;
 	
-	
-	LOGIN login = new LOGIN();
-	USER user = new USER();
-
-	
 	JFrame frame;
 	JDialog dialog = new JDialog(frame);
-	JPanel login_panel;
-	JTextField id_textField;
-	JTextField pw_textField;
+	JPanel login_panel, signUp_panel;
+	JTextField id_textField, pw_textField, num_textField, name_textField, id_textField_1;
 	JButton signUpPage_Button;
+	JLabel login_Label, signUp_Label;
+	JPasswordField pwField_1, pwField_2;
 	
-	JPanel signUp_panel;
-	JLabel signUp_Label;
-	JTextField name_textField;
-	JTextField id_textField_1;
-	JPasswordField pwField_1;
-	JPasswordField pwField_2;
+	UI_2 ui2 = new UI_2();
+	UI_3 ui3 = new UI_3();
 	
-	private JLabel login_Label;
-	private JTextField num_textField;
-	Choice choice;
 	/**
 	 * Launch the application.
 	 */
@@ -86,9 +71,8 @@ public class UI {
 			public void run() {			
 				try {
 					socket = new Socket("localhost", 8282);
-					UI window = new UI();
-					window.frame.setVisible(true);
-					
+					UI ui = new UI();
+					ui.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -109,6 +93,7 @@ public class UI {
 	private void initialize() {
 		
 		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\User\\eclipse-workspace\\Project\\Logo.JPG"));
 		frame.setTitle("UNIV-PASS");
 		frame.setBounds(100, 100, 520, 353);
 		frame.setLocationRelativeTo(null);
@@ -133,70 +118,35 @@ public class UI {
 		
 		name_textField = new JTextField("이름");
 		name_textField.setBounds(59, 66, 266, 40);
-		name_textField.setForeground(Color.LIGHT_GRAY);
 		name_textField.setFont(new Font("굴림", Font.BOLD, 17));
 		name_textField.setColumns(10);
-		name_textField.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                name_textField.setText(null);
-                name_textField.setForeground(Color.BLACK);
-            }
-        });
+		setTextField(name_textField, "이름");
 		signUp_panel.add(name_textField);
 		
 		num_textField = new JTextField("학번");
 		num_textField.setBounds(59, 114, 266, 40);
-		num_textField.setForeground(Color.LIGHT_GRAY);
 		num_textField.setFont(new Font("굴림", Font.BOLD, 17));
 		num_textField.setColumns(10);
-		num_textField.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-                num_textField.setText("");
-                num_textField.setForeground(Color.BLACK);
-            }
-        });
+		setTextField(num_textField, "학번");
 		signUp_panel.add(num_textField);
 		
 		id_textField_1 = new JTextField("아이디");
 		id_textField_1.setBounds(59, 162, 266, 40);
-		id_textField_1.setForeground(Color.LIGHT_GRAY);
 		id_textField_1.setFont(new Font("굴림", Font.BOLD, 17));
 		id_textField_1.setColumns(10);
-		id_textField_1.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-            	id_textField_1.setText("");
-            	id_textField_1.setForeground(Color.BLACK);
-            }
-        });
+		setTextField(id_textField_1, "아이디");
 		signUp_panel.add(id_textField_1);
 		
 		pwField_1 = new JPasswordField("비밀번호");
 		pwField_1.setBounds(59, 210, 266, 40);
-		pwField_1.setForeground(Color.LIGHT_GRAY);
 		pwField_1.setFont(new Font("굴림", Font.BOLD, 17));
-		pwField_1.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-            	pwField_1.setText("");
-            	pwField_1.setForeground(Color.BLACK);
-            }
-        });
+		setTextField(pwField_1, "비밀번호");
 		signUp_panel.add(pwField_1);
 		
 		pwField_2 = new JPasswordField("비밀번호");
 		pwField_2.setBounds(59, 258, 266, 40);
-		pwField_2.setForeground(Color.LIGHT_GRAY);
 		pwField_2.setFont(new Font("굴림", Font.BOLD, 17));
-		pwField_2.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-            	pwField_2.setText("");
-            	pwField_2.setForeground(Color.BLACK);
-            }
-        });
+		setTextField(pwField_2, "비밀번호");
 		signUp_panel.add(pwField_2);
 		
 		JButton loginPage_Button = new JButton("로그인");
@@ -211,13 +161,6 @@ public class UI {
 		signUp_Button.setForeground(Color.WHITE);
 		signUp_Button.setFont(new Font("굴림", Font.BOLD, 17));
 		signUp_panel.add(signUp_Button);
-		
-		JButton idCheck_Button = new JButton("중복확인");
-		idCheck_Button.setForeground(Color.WHITE);
-		idCheck_Button.setFont(new Font("굴림", Font.BOLD, 17));
-		idCheck_Button.setBackground(new Color(0, 102, 153));
-		idCheck_Button.setBounds(362, 162, 123, 40);
-		signUp_panel.add(idCheck_Button);
 		signUp_panel.setVisible(false);
 		
 		//로그인 패널
@@ -229,30 +172,16 @@ public class UI {
 		
 		id_textField = new JTextField("아이디");
 		id_textField.setBounds(125, 87, 266, 45);
-		id_textField.setForeground(Color.LIGHT_GRAY);
 		id_textField.setFont(new Font("굴림", Font.BOLD, 17));
 		id_textField.setColumns(10);
-		id_textField.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-            	id_textField.setText("");
-            	id_textField.setForeground(Color.BLACK);
-            }
-        });
+		setTextField(id_textField, "아이디");
 		login_panel.add(id_textField);
 		
 		pw_textField = new JPasswordField("비밀번호");
 		pw_textField.setBounds(125, 142, 266, 45);
-		pw_textField.setForeground(Color.LIGHT_GRAY);
 		pw_textField.setFont(new Font("굴림", Font.BOLD, 17));
 		pw_textField.setColumns(10);
-		pw_textField.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e){
-            	pw_textField.setText("");
-            	pw_textField.setForeground(Color.BLACK);
-            }
-        });
+		setTextField(pw_textField, "비밀번호");
 		login_panel.add(pw_textField);
 		
 		signUpPage_Button = new JButton("회원가입");
@@ -276,6 +205,7 @@ public class UI {
 		login_Label.setFont(new Font("굴림", Font.BOLD, 17));
 		login_Label.setBounds(0, 0, 262, 51);
 		login_panel.add(login_Label);
+//		login_panel.setVisible(false);
 		
 		signUpPage_Button.addActionListener(new ActionListener() {
 			@Override
@@ -306,7 +236,7 @@ public class UI {
 					InputStreamReader ISR = new InputStreamReader(socket.getInputStream());
 
 					PrintWriter print = new PrintWriter(socket.getOutputStream());
-					String sendstring = UserId + "/" + UserPw;
+					String sendstring = "2/" + UserId + "/" + UserPw;
 					
 					print.println(sendstring);
 					print.flush();
@@ -316,65 +246,29 @@ public class UI {
 					LoginResult = buffer.readLine();
 					
 				} catch (IOException e1) {}
-
+				
+				//로그인 성공
 				if(LoginResult.equals("1")) {
 					JOptionPane.showMessageDialog(null, "로그인이 완료되었습니다.");
-				} else if(LoginResult.equals("0")) {
-					JOptionPane.showMessageDialog(null, "아이디가 존재하지 않습니다.");
 					
-					id_textField.setText("아이디");
-					id_textField.setForeground(Color.LIGHT_GRAY);
-					id_textField.addMouseListener(new MouseAdapter(){
-			            @Override
-			            public void mouseClicked(MouseEvent e){
-			            	id_textField.setText("");
-			            	id_textField.setForeground(Color.BLACK);
-			            }
-			        });
-					
-					pw_textField.setText("비밀번호");
-					pw_textField.setForeground(Color.LIGHT_GRAY);
-					pw_textField.addMouseListener(new MouseAdapter(){
-			            @Override
-			            public void mouseClicked(MouseEvent e){
-			            	pw_textField.setText("");
-			            	pw_textField.setForeground(Color.BLACK);
-			            }
-			        });
-				}/* else if(LoginResult == -1) {
-					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
-					
-					pw_textField.setText("비밀번호");
-					pw_textField.setForeground(Color.LIGHT_GRAY);
-					pw_textField.addMouseListener(new MouseAdapter(){
-			            @Override
-			            public void mouseClicked(MouseEvent e){
-			            	pw_textField.setText("");
-			            	pw_textField.setForeground(Color.BLACK);
-			            }
-			        });
-				}*/
-			}
-		});
-		
-		//아이디 중복 여부를 체크하는 버튼을 눌렀을 때
-		idCheck_Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if(id_textField_1.getText().length() > 0) {  //아이디를 입력한 경우
-					if(userSql.idCheck(id_textField_1.getText())) {  //아이디가 존재하는 경우
-						JOptionPane.showMessageDialog(dialog, "사용할 수 없는 아이디입니다.");
-						
-						id_textField_1.setText(null);
-						id_textField_1.requestFocus();
-					} else {	//중복되는 아이디가 없는 경우
-						JOptionPane.showMessageDialog(dialog, "사용 가능한 아이디입니다.");
+					//관리자 GUI로 이동
+					if(UserMode.equals("1")) {
+						frame.setVisible(false);
+						ui3.frame.setVisible(true);
+					//사용자 GUI로 이동
+					} else {
+						frame.setVisible(false);
+						ui2.frame.setVisible(true);
 					}
-				} else {
-					JOptionPane.showMessageDialog(dialog, "아이디를 입력해주세요.");
-					id_textField_1.requestFocus();
+					
+				//로그인 실패	
+				} else if(LoginResult.equals("0")) {
+					JOptionPane.showMessageDialog(null, "존재하지 않는 아이디이거나, 잘못된 비밀번호입니다.");
+					
+					setTextField(id_textField, "아이디");
+					setTextField(pw_textField, "비밀번호");
 				}
-			}			
+			}
 		});
 		
 		//회원가입 정보를 입력하고 회원가입 버튼을 눌렀을 때
@@ -390,7 +284,7 @@ public class UI {
 				try {
 					BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					PrintWriter print = new PrintWriter(socket.getOutputStream());
-					String sendstring = UserNum + "/" + UserName + "/" + UserId + "/" + UserPw;
+					String sendstring = "3/" + UserNum + "/" + UserName + "/" + UserId + "/" + UserPw;
 					
 					print.println(sendstring);
 					print.flush();
@@ -399,44 +293,31 @@ public class UI {
 					
 				} catch (IOException e1) {}
 
+				//비밀번호 입력창과 비밀번호확인 입력창의 내용이 다르면 비밀번호가 다르다는 메시지 출력
+				if(!(pwField_1.getText().contentEquals(pwField_2.getText()))) {
+					JOptionPane.showMessageDialog(null, "비밀번호 다름");
+				}
 				
 				if(SignUpResult.equals("1")) {
 					JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
 					login_panel.setVisible(true);
 					signUp_panel.setVisible(false);
-				} else {
-					if(idCheck == 0) {	//아이디가 이미 존재할 경우
-						JOptionPane.showMessageDialog(null, "동일한 아이디가 존재합니다.");
-					}
+					setTextField(id_textField, "아이디");
+					setTextField(pw_textField, "비밀번호");
 				}
-				
-/*				PreparedStatement ps;
-				Connection conn2 = conn.getDB();
-				
-				//비밀번호 입력창과 비밀번호확인 입력창의 내용이 다르면 비밀번호가 다르다는 메시지 출력
-				if(!(pwField_1.getText().contentEquals(pwField_2.getText()))) {
-					JOptionPane.showMessageDialog(null, "비밀번호 다름");
-				} else {
-					try {
-						ps = ((Connection) conn2).prepareStatement("INSERT INTO User VALUES(?,?,?,?)");
-						ps.setString(1, num_textField.getText());
-						ps.setString(2, name_textField.getText());
-						ps.setString(3, id_textField_1.getText());
-						ps.setString(4, pwField_2.getText());
-						ps.executeUpdate();
-						JOptionPane.showMessageDialog(null, "회원가입이 완료되었습니다.");
-						
-						name_textField.setText(null);
-						num_textField.setText(null);
-						id_textField_1.setText(null);
-						pwField_1.setText(null);
-						pwField_2.setText(null);
-
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}*/
 			}
 		});
+	}
+	
+	void setTextField(JTextField tf, String s) {
+		tf.setForeground(Color.LIGHT_GRAY);
+		tf.setText(s);
+		tf.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e){
+            	tf.setText(null);
+            	tf.setForeground(Color.BLACK);
+            }
+        });
 	}
 }
