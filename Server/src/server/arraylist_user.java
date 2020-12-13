@@ -102,7 +102,7 @@ public class arraylist_user {
 						if(s == 1) {
 							stmt2 = conn2.createStatement();
 						
-							r2 = stmt2.executeUpdate("insert into main" + "(StudentNum, Status, Date) value ('" + tokens[1] + "','"
+							r2 = stmt2.executeUpdate("insert into humanities" + "(StudentNum, Status, Date) value ('" + tokens[1] + "','"
 									+ "1" + "','" + now + "')");
 							s = 0;
 							if (r2 == 1)   // 저장 성공
@@ -124,6 +124,7 @@ public class arraylist_user {
 						login.insert_login(receiveString);
 						send.set_message(message);
 						this.state = 1;
+						
 						break;
 					}
 				}
