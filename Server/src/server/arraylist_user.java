@@ -19,6 +19,8 @@ public class arraylist_user {
 
 	connect_signup connect1 = new connect_signup();
 	connect_building connect2 = new connect_building();
+	admin ad = new admin();
+	
 	Statement stmt1 = null;
 	Statement stmt2 = null;
 	ResultSet r;
@@ -157,6 +159,9 @@ public class arraylist_user {
 
 				this.state = 0;
 			}
+			
+			else if (tokens[0].equals("4"))
+				ad.work(receiveString);
 
 		} catch (SQLException e) {
 		}
