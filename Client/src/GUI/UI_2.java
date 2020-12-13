@@ -1,4 +1,4 @@
-package Gui;
+package GUI;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,6 +6,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.StringTokenizer;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -17,7 +19,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
 import java.awt.Toolkit;
 
 /*
@@ -29,13 +30,22 @@ import java.awt.Toolkit;
 public class UI_2 {
 	JFrame frame;
 	JPanel main_panel, where_panel, hall_panel, bus_panel, stud_panel, enter_panel, add_panel;
-	JTable table, table2;
-	DefaultTableModel model, model2;	//학생 정보 테이블, 출입기록 테이블
+	JTable stud_table, enter_table;
 	JLabel enter_title_Label, editNum_textLabel;
 	JTextField addNum_textField, addName_textField, addId_textField, addPw_textField, search_textField;
 	JComboBox<String> comboBox;
 	JButton search_Button;
 	JDialog dialog = new JDialog(frame);
+	
+	
+	static String[][] stud_contents;
+	static String[][] enter_contents;
+	static String[] tokens2;
+	static String[] tokens;
+	
+	String data = "/-";
+	StringTokenizer token1 = new StringTokenizer(data, "-");
+	String[] tokens1 = data.split("-");
 	
 	/*
 	 * 관리자가 입력한 값
@@ -117,9 +127,51 @@ public class UI_2 {
 		dialog.setResizable(false);
 		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		
+		/*
+		 * 셔틀버스를 선택하는 페이지 (bus_panel)
+		 * 아산역, 천안역 버튼 중에서 선택한다.
+		 * */
+		bus_panel = new JPanel();
+		bus_panel.setBounds(0, 0, 546, 492);
+		frame.getContentPane().add(bus_panel);
+		bus_panel.setLayout(null);
+		
+		JButton Onyang_Button = new JButton("온양역");
+		Onyang_Button.setForeground(Color.WHITE);
+		Onyang_Button.setFont(new Font("굴림", Font.BOLD, 28));
+		Onyang_Button.setBackground(new Color(0, 102, 153));
+		Onyang_Button.setBounds(161, 336, 223, 92);
+		bus_panel.add(Onyang_Button);
+		
+		JButton Cheonan_Asan_Button = new JButton("천안아산역");
+		Cheonan_Asan_Button.setForeground(Color.WHITE);
+		Cheonan_Asan_Button.setFont(new Font("굴림", Font.BOLD, 28));
+		Cheonan_Asan_Button.setBackground(new Color(0, 102, 153));
+		Cheonan_Asan_Button.setBounds(161, 62, 223, 92);
+		bus_panel.add(Cheonan_Asan_Button);
+		
+		JButton bus_back_Button = new JButton("←");
+		bus_back_Button.setFont(new Font("굴림", Font.BOLD, 10));
+		bus_back_Button.setBackground(new Color(220, 220, 220));
+		bus_back_Button.setBounds(3, 3, 47, 32);
+		bus_panel.add(bus_back_Button);
+		
+		JButton Terminal_Button = new JButton("천안터미널");
+		Terminal_Button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		Terminal_Button.setForeground(Color.WHITE);
+		Terminal_Button.setFont(new Font("굴림", Font.BOLD, 28));
+		Terminal_Button.setBackground(new Color(0, 102, 153));
+		Terminal_Button.setBounds(161, 200, 223, 92);
+		bus_panel.add(Terminal_Button);
+		bus_panel.setVisible(false);
+		
 		/*
 		 * 관리자 페이지 (main_panel)
-		 * 학생 관리, 출입 관리, 종료 버튼 중 선택한다.
+		 * 학생 관리, 출입 관리 중 선택한다.
 		 * */
 		main_panel = new JPanel();
 		main_panel.setBounds(0, 0, 546, 492);
@@ -140,13 +192,13 @@ public class UI_2 {
 		wherePage_Button.setBounds(161, 264, 223, 92);
 		main_panel.add(wherePage_Button);
 		
-		JButton end_Button = new JButton("종료");
+/*		JButton end_Button = new JButton("종료");
 		end_Button.setFont(new Font("굴림", Font.BOLD, 15));
 		end_Button.setBackground(new Color(220, 220, 220));
 		end_Button.setBounds(440, 436, 72, 41);
 		main_panel.add(end_Button);
-		
-		
+*/
+
 		/*
 		 * main_panel에서 wherePage_Button을 선택하면 출력될 페이지
 		 * 건물, 셔틀버스 버튼을 선택한다.
@@ -177,40 +229,13 @@ public class UI_2 {
 		where_panel.add(whereEnd_Button);
 		where_panel.setVisible(false);
 
+
 		
-		/*
-		 * 셔틀버스를 선택하는 페이지 (bus_panel)
-		 * 아산역, 천안역 버튼 중에서 선택한다.
-		 * */
-		bus_panel = new JPanel();
-		bus_panel.setBounds(0, 0, 546, 492);
-		frame.getContentPane().add(bus_panel);
-		bus_panel.setLayout(null);
-		
-		JButton Asan_Button = new JButton("아산역");
-		Asan_Button.setForeground(Color.WHITE);
-		Asan_Button.setFont(new Font("굴림", Font.BOLD, 28));
-		Asan_Button.setBackground(new Color(0, 102, 153));
-		Asan_Button.setBounds(161, 129, 223, 92);
-		bus_panel.add(Asan_Button);
-		
-		JButton Cheonan_Button = new JButton("천안역");
-		Cheonan_Button.setForeground(Color.WHITE);
-		Cheonan_Button.setFont(new Font("굴림", Font.BOLD, 28));
-		Cheonan_Button.setBackground(new Color(0, 102, 153));
-		Cheonan_Button.setBounds(161, 264, 223, 92);
-		bus_panel.add(Cheonan_Button);
-		
-		JButton bus_back_Button = new JButton("←");
-		bus_back_Button.setFont(new Font("굴림", Font.BOLD, 10));
-		bus_back_Button.setBackground(new Color(220, 220, 220));
-		bus_back_Button.setBounds(3, 3, 47, 32);
-		bus_panel.add(bus_back_Button);
-		bus_panel.setVisible(false);
 		
 		
 		/*
 		 * 건물 출입기록 페이지 (enter_panel)
+		 * 테이블을 출력한다.
 		 * 학번, 날짜, 출입 중 선택하여 검색한다.
 		 * */
 		enter_panel = new JPanel();
@@ -221,7 +246,7 @@ public class UI_2 {
 		JLabel enter_title_Label = new JLabel();
 		enter_title_Label.setText("ㅇㅇ관");
 		enter_title_Label.setHorizontalAlignment(SwingConstants.CENTER);
-		enter_title_Label.setFont(new Font("굴림", Font.BOLD, 25));
+		enter_title_Label.setFont(new Font("굴림", Font.BOLD, 20));
 		enter_title_Label.setBounds(13, 35, 127, 42);
 		enter_panel.add(enter_title_Label);
 		
@@ -231,25 +256,40 @@ public class UI_2 {
 		enter_back_Button.setBounds(3, 3, 47, 32);
 		enter_panel.add(enter_back_Button);
 		
-		String[] headers2 = new String [] {"학번", "날짜", "출입"};
-		DefaultTableModel model2 = new DefaultTableModel(headers2, 0) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
 		
-		table2 = new JTable(model);
-		table2.setRowHeight(30);
-		table2.setFont(new Font("굴림", Font.PLAIN, 15));
-		table2.setAlignmentX(0);
-		table2.setEnabled(true); 	//셀 편집 가능 여부
-		table2.getTableHeader().setReorderingAllowed(false);	//컬럼 순서 변경 여부
-		table2.setAutoCreateRowSorter(true);	//정렬
-		table2.setSize(450,450);
-		table2.setPreferredScrollableViewportSize(new Dimension(450, 450));
+		String[] enter_headers = new String [] {"학번", "출입", "날짜"};
+		String enter_info = "2019243044/1/Sat Dec 12 19:14:47 KST 2020/-2019243111/1/Sat Dec 12 19:49:03 KST 2020/-";
+
+		StringTokenizer token1 = new StringTokenizer(enter_info, "-");
+		String[] tokens1 = enter_info.split("-");
+		enter_contents = new String[tokens1.length][3];
 		
-		JScrollPane scrollPane2 = new JScrollPane(table2);
+		for(int i = 0; i < tokens1.length; i++) {
+				tokens2 = tokens1[i].split("/");
+				for(int j = 0; j < 3; j++) {
+					if(j == 1) {
+						if(tokens2[j].equals("1")) {
+							enter_contents[i][j] = "PASS";
+						} else if(tokens2[j].equals("0")) {
+							enter_contents[i][j] = "FAIL";
+						}
+					} else {
+						enter_contents[i][j] = tokens2[j];
+					}
+				}
+		}
+		
+		enter_table = new JTable(enter_contents, enter_headers);
+		enter_table.setRowHeight(30);
+		enter_table.setFont(new Font("굴림", Font.PLAIN, 15));
+		enter_table.setAlignmentX(0);
+		enter_table.setEnabled(true);	 //셀 편집 가능 여부
+		enter_table.getTableHeader().setReorderingAllowed(false);	//컬럼 순서 변경 여부
+		enter_table.setAutoCreateRowSorter(true);	//정렬
+		enter_table.setSize(450,450);
+		enter_table.setPreferredScrollableViewportSize(new Dimension(450, 450));
+		
+		JScrollPane scrollPane2 = new JScrollPane(enter_table);
 		scrollPane2.setBounds(5, 100, 529, 369);
 		enter_panel.add(scrollPane2);
 		frame.getContentPane().add(enter_panel);
@@ -270,8 +310,8 @@ public class UI_2 {
 		enter_comboBox.setFont(new Font("굴림", Font.PLAIN, 14));
 		enter_comboBox.setBounds(160, 42, 77, 28);
 		enter_comboBox.addItem("학번");
-		enter_comboBox.addItem("날짜");
 		enter_comboBox.addItem("출입");
+		enter_comboBox.addItem("날짜");
 		enter_comboBox.addItem("전체");
 		enter_panel.add(enter_comboBox);
 		enter_panel.setVisible(false);
@@ -363,6 +403,9 @@ public class UI_2 {
 		hall_panel.add(hall_back_Button);
 		hall_panel.setVisible(false);
 
+		
+		
+		
 		/*
 		 * 학생 정보 관리 페이지 (stud_panel)
 		 * 추가, 변경, 삭제 버튼 눌러 페이지 이동 후 관리 기능 수행
@@ -371,25 +414,32 @@ public class UI_2 {
 		stud_panel.setBounds(0, 0, 546, 492);
 		stud_panel.setLayout(null);
 		
-		String[] headers = new String [] {"학번", "이름", "ID", "PW"};
-		DefaultTableModel model = new DefaultTableModel(headers, 0) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+		String[] stud_headers = new String [] {"학번", "이름", "ID", "PW"};
+		String stud_info_server="20190/고주원/idd/asdfa/-20191/김후정/id2/wefgfdg/-20192/신은진/id3/dsfgn/-";
+		String stud_info = stud_info_server;
+
+		token1 = new StringTokenizer(stud_info, "-");
+		tokens1 = stud_info.split("-");
+		stud_contents = new String[tokens1.length][4];
 		
-		table = new JTable(model);
-		table.setRowHeight(30);
-		table.setFont(new Font("굴림", Font.PLAIN, 15));
-		table.setAlignmentX(0);
-		table.setEnabled(true); 	//셀 편집 가능 여부
-		table.getTableHeader().setReorderingAllowed(false);	//컬럼 순서 변경 여부
-		table.setAutoCreateRowSorter(true);	//정렬
-		table.setSize(450,450);
-		table.setPreferredScrollableViewportSize(new Dimension(450, 450));
+		for(int i = 0; i < tokens1.length; i++) {
+				tokens2 = tokens1[i].split("/");
+				for(int j = 0; j < 4; j++) {
+					 stud_contents[i][j] = tokens2[j];
+				}
+		}
 		
-		JScrollPane scrollPane = new JScrollPane(table);
+		stud_table = new JTable(stud_contents, stud_headers);
+		stud_table.setRowHeight(30);
+		stud_table.setFont(new Font("굴림", Font.PLAIN, 15));
+		stud_table.setAlignmentX(0);
+		stud_table.setEnabled(true);	 //셀 편집 가능 여부
+		stud_table.getTableHeader().setReorderingAllowed(false);	//컬럼 순서 변경 여부
+		stud_table.setAutoCreateRowSorter(true);	//정렬
+		stud_table.setSize(450,450);
+		stud_table.setPreferredScrollableViewportSize(new Dimension(450, 450));
+		
+		JScrollPane scrollPane = new JScrollPane(stud_table);
 		scrollPane.setBounds(5, 35, 529, 409);
 		stud_panel.add(scrollPane);
 		frame.getContentPane().add(stud_panel);
@@ -430,6 +480,7 @@ public class UI_2 {
 		JComboBox<String> table_comboBox = new JComboBox<String>();
 		table_comboBox.setFont(new Font("굴림", Font.PLAIN, 14));
 		table_comboBox.setBounds(64, 452, 77, 28);
+		table_comboBox.addItem("학번");
 		table_comboBox.addItem("이름");
 		table_comboBox.addItem("ID");
 		table_comboBox.addItem("PW");
@@ -529,43 +580,13 @@ public class UI_2 {
 		add_Button2.setBackground(new Color(0, 102, 153));
 		add_Button2.setFont(new Font("굴림", Font.BOLD, 17));
 		add_panel.add(add_Button2);
-		add_panel.setVisible(false);
 		
 		JButton addBack_Button = new JButton("←");
 		addBack_Button.setBounds(12, 10, 45, 36);
 		addBack_Button.setBackground(Color.LIGHT_GRAY);
 		addBack_Button.setFont(new Font("굴림", Font.PLAIN, 12));
 		add_panel.add(addBack_Button);
-		
-		
-		//테이블 DB 불러오기
-/*		try {
-			ResultSet r = null;
-			CONNECT connect = new CONNECT();
-			
-			Connection conn = connect.getDB();
-			Statement stmt = conn.createStatement();
-			
-			r = stmt.executeQuery("SELECT * FROM User");
-			
-			ResultSetMetaData resultSetMetaData = r.getMetaData();
-			Object[] tempObject = new Object[resultSetMetaData.getColumnCount()];
-			model.setRowCount(0);
-			while (r.next()) {
-				for(int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
-					tempObject[i] = r.getString(i+1);
-				}
-				model.addRow(tempObject);
-			}
-			if(model.getRowCount() > 0 ) {
-				table.setRowSelectionInterval(0, 0); //첫번째줄 포커싱
-			}
-		} catch(Exception e) {
-			System.out.println("연결 오류 " + e.getStackTrace());
-		} finally {
-			userSql.closeDatabase();
-		}*/
-		
+		add_panel.setVisible(false);
 		
 		//검색 버튼을 선택한 경우
 		search_Button.addActionListener(new ActionListener() {
@@ -637,8 +658,8 @@ public class UI_2 {
 						break;
 					}
 					
-					if(model.getRowCount() > 0 ) {
-						table.setRowSelectionInterval(0, 0);
+					if(stud_table.getRowCount() > 0 ) {
+						stud_table.setRowSelectionInterval(0, 0);
 					}
 				}
 			});
@@ -647,18 +668,20 @@ public class UI_2 {
 		delete_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(table.getSelectedRowCount() > 0) {
+				if(stud_table.getSelectedRowCount() > 0) {
 					
 					if(JOptionPane.showConfirmDialog(stud_panel, "해당 학생의 정보를 삭제하시겠습니까?", "삭제 확인", 0) == 0) {
-						for(int i : table.getSelectedRows()) {	//선택한 학생의 row값을 int로 반환
-//							UserNum = String.valueOf(model.getValueAt(table.getSelectedRow(), 0));
-							UserNum = String.valueOf(model.getValueAt(i, 0));
-							UserName = String.valueOf(model.getValueAt(i, 0));
-							UserId = String.valueOf(model.getValueAt(i, 0));
-							UserPw = String.valueOf(model.getValueAt(i, 0));
+						for(int i : stud_table.getSelectedRows()) {	//선택한 학생의 row값을 int로 반환
+							UserNum = String.valueOf(stud_table.getValueAt(i, 0));
+							UserName = String.valueOf(stud_table.getValueAt(i, 1));
+							UserId = String.valueOf(stud_table.getValueAt(i, 2));
+							UserPw = String.valueOf(stud_table.getValueAt(i, 3));
+							
+							System.out.println(UserNum + "/" + UserName + "/" + UserId + "/" + UserPw);
 							
 							//[서버] - 학생 삭제 기능 구현
 							//userSql.deleteUser(String.valueOf(model.getValueAt(i, 0)));
+							
 							
 							if(DelResult.equals("1")) {
 								JOptionPane.showMessageDialog(frame, "삭제되었습니다.");
@@ -667,36 +690,8 @@ public class UI_2 {
 							}
 						}
 						
-						model.fireTableDataChanged();	//테이블 데이터값 갱신
-						
-						//[서버] - 테이블 불러오기
-/*						try {
-							Statement stmt = conn.createStatement();
-							r = stmt.executeQuery("SELECT * FROM User");
-							
-							search_textField.setText(null);
-							table_comboBox.setSelectedIndex(0);
-							
-							ResultSetMetaData resultSetMetaData = r.getMetaData();
-							Object[] tempObject = new Object[resultSetMetaData.getColumnCount()];
-							
-							model.setRowCount(0);
-							
-							while (r.next()) {
-								for(int i = 0; i < resultSetMetaData.getColumnCount(); i++) {
-									tempObject[i] = r.getString(i+1);
-								}
-								model.addRow(tempObject);
-							}
-							
-							if(model.getRowCount() > 0 ) {
-								table.setRowSelectionInterval(0, 0);
-							}
-							
-						}
-						catch (SQLException e1) {
-							System.out.println("연결 오류 " +  e1.getStackTrace());
-						}*/
+//						stud_table.fireTableDataChanged();	//테이블 데이터값 갱신
+
 					}
 				}
 				else {
@@ -711,7 +706,7 @@ public class UI_2 {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				switch(table.getSelectedRowCount()) {
+				switch(stud_table.getSelectedRowCount()) {
 				
 				case 0:
 					JOptionPane.showMessageDialog(frame, "선택된 학생이 없습니다.");
@@ -723,10 +718,10 @@ public class UI_2 {
 					editNum_textLabel.setVisible(true);
 					
 					//지정한 학생의 데이터값을 불러온다.
-					UserNum = String.valueOf(model.getValueAt(table.getSelectedRow(), 0));
-					UserName = String.valueOf(model.getValueAt(table.getSelectedRow(), 1));
-					UserId = String.valueOf(model.getValueAt(table.getSelectedRow(), 2));
-					UserPw = String.valueOf(model.getValueAt(table.getSelectedRow(), 3));
+					UserNum = String.valueOf(stud_table.getValueAt(stud_table.getSelectedRow(), 0));
+					UserName = String.valueOf(stud_table.getValueAt(stud_table.getSelectedRow(), 1));
+					UserId = String.valueOf(stud_table.getValueAt(stud_table.getSelectedRow(), 2));
+					UserPw = String.valueOf(stud_table.getValueAt(stud_table.getSelectedRow(), 3));
 					
 					stud_panel.setVisible(false);
 					add_panel.setVisible(true);
@@ -915,7 +910,7 @@ public class UI_2 {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				//건물
-				if(enter_title_Label.getText().equals("아산역") || enter_title_Label.getText().equals("천안역")) {
+				if(enter_title_Label.getText().equals("천안아산역") || enter_title_Label.getText().equals("천안터미널") || enter_title_Label.getText().equals("온양역")) {
 					enter_panel.setVisible(false);
 					bus_panel.setVisible(true);
 					
@@ -927,18 +922,26 @@ public class UI_2 {
 			}
 		});
 		
-		Asan_Button.addActionListener(new ActionListener() {
+		Onyang_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				enter_title_Label.setText("아산역");
+				enter_title_Label.setText("온양역");
 				busButton();
 			}
 		});
 		
-		Cheonan_Button.addActionListener(new ActionListener() {
+		Cheonan_Asan_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				enter_title_Label.setText("천안역");
+				enter_title_Label.setText("천안아산역");
+				busButton();
+			}
+		});
+		
+		Terminal_Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				enter_title_Label.setText("천안터미널");
 				busButton();
 			}
 		});
@@ -990,8 +993,8 @@ public class UI_2 {
 						enterSearch_textField.setText(null);	//검색 내용을 비운다.
 						enter_comboBox.setSelectedIndex(0);		//테이블 인덱스 위치를 맨 위로 옮긴다.
 					}
-					if(model.getRowCount() > 0 ) {
-						table.setRowSelectionInterval(0, 0);
+					if(stud_table.getRowCount() > 0 ) {
+						stud_table.setRowSelectionInterval(0, 0);
 					}
 				}
 				
@@ -1028,8 +1031,8 @@ public class UI_2 {
 						enterSearch_textField.setText(null);	//검색 내용을 비운다.
 						enter_comboBox.setSelectedIndex(0);		//테이블 인덱스 위치를 맨 위로 옮긴다.
 					}
-					if(model.getRowCount() > 0 ) {
-						table.setRowSelectionInterval(0, 0);
+					if(stud_table.getRowCount() > 0 ) {
+						stud_table.setRowSelectionInterval(0, 0);
 					}
 				}
 				
