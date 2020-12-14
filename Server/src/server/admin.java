@@ -18,6 +18,7 @@ public class admin {
 	Statement stmt_bus = null;
 	Statement stmt_signup = null;
 	int r1;
+	int rd;
 	ResultSet r2=null;
 
 	String data[][] = new String[20][3];
@@ -43,7 +44,6 @@ public class admin {
 			sign_up signup = new sign_up();
 			Date now = new Date();
 
-			System.out.println("입장2");
 			System.out.println(tokens[0]+tokens[1]+tokens[2]);
 			
 			// 건물, 빌딩, 사용자 DB 조회
@@ -137,11 +137,13 @@ public class admin {
 				
 				String send = "3/" + tokens[2] + "/" + tokens[3] + "/" + tokens[4] + "/" + tokens[5];
 				signup.insert_signup(send);
+				send_data = "1";
+				
 			}
 			
 			// 사용자 데이터 변경
 			if(tokens[1].equals("3")==true) {
-				r1 = stmt_signup.executeUpdate("update freeboard user_signup set " + tokens[3] + " StudentNum = " + tokens[2]);
+				r1 = stmt_signup.executeUpdate("update user_signup set " + tokens[3] + "where StudentNum = " + tokens[2]);
 				
 				if(r1 == 1) {
 					System.out.println(">> Update User\n");
@@ -159,8 +161,11 @@ public class admin {
 				
 				if(r1 == 1) {
 					System.out.println(">> Delete User\n");
+					rd = stmt_signup.executeUpdate("drop table " + tokens[3]);
 					send_data = "1";
+					
 				}
+				
 				else {
 					System.out.println(">> Fail\n");
 					send_data = "0";
@@ -172,7 +177,8 @@ public class admin {
 
 				print.println(send_data);
 				print.flush();
-
+				
+				System.out.println(send_data);
 				System.out.println("> Send!\n");
 
 			} catch (IOException e) {

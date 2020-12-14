@@ -38,7 +38,7 @@ public class sign_up {
 					+ "','" + tokens[2] + "','" + tokens[3] + "','" + tokens[4] + "','" + now + "')");
 
 			if (r1 == 1) {   // 저장 성공
-				System.out.println("\n>>User " + tokens[2] + " Sign up\n");
+				System.out.println("\n>>User " + tokens[3] + " Sign up\n");
 				
 				// CREATE 문으로 sign_up DB에 유저의 아이디를 이름으로 하는 테이블 생성
 				// 저장될 데이터 -> 건물(출입을 시도한), 출입 여부, 날짜

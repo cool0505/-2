@@ -13,12 +13,11 @@ import java.net.Socket;
 // receive_server 클래스와 달리, 전달 하고자 할 때만 동작 (무한 반복 x)
 public class send_server {
 
-	String message = "0";   // 송신할 데이터를 저장하는 변수
+	// message -> 송신할 데이터를 저장하는 변수
 
 	public void set_message(String message) {
 		
 
-		this.message = message;
 		OutputStream os = null; 
 		OutputStreamWriter osw = null; 
 		BufferedWriter bw = null;
