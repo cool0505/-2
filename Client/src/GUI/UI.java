@@ -261,8 +261,7 @@ public class UI {
 					
 				//로그인 실패	
 				} else if(LoginResult.equals("0")) {
-					JOptionPane.showMessageDialog(null, "존재하지 않는 아이디이거나, 잘못된 비밀번호입니다.");
-					
+					JOptionPane.showMessageDialog(null, "존재하지 않는 아이디이거나, 잘못된 비밀번호입니다.");				
 					setTextField(id_textField, "아이디");
 					setTextField(pw_textField, "비밀번호");
 				}

@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * 관리자 GUI
@@ -35,12 +36,12 @@ public class UI_2 {
 	JFrame frame;
 	JPanel main_panel, where_panel, hall_panel, bus_panel, stud_panel, enter_panel, add_panel;
 	JTable stud_table, enter_table;
-	JLabel enter_title_Label, editNum_textLabel;
+	JLabel enter_title_Label, editNum_textLabel, addTitle_Label;
 	JTextField addNum_textField, addName_textField, addId_textField, addPw_textField, search_textField;
 	JComboBox<String> comboBox;
 	JButton search_Button;
 	JDialog dialog = new JDialog(frame);
-	
+	DefaultTableModel model;
 	static String[][] stud_contents;
 	static String[][] enter_contents;
 	static String[] tokens2;
@@ -445,7 +446,7 @@ public class UI_2 {
 		frame.getContentPane().add(add_panel);
 		add_panel.setLayout(null);
 		
-		JLabel addTitle_Label = new JLabel("정보 추가");
+		addTitle_Label = new JLabel("정보 추가");
 		addTitle_Label.setBounds(152, 10, 241, 36);
 		addTitle_Label.setHorizontalAlignment(SwingConstants.CENTER);
 		addTitle_Label.setFont(new Font("굴림", Font.PLAIN, 20));
@@ -605,6 +606,7 @@ public class UI_2 {
 		delete_Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
 				if(stud_table.getSelectedRowCount() > 0) {
 					
 					if(JOptionPane.showConfirmDialog(stud_panel, "해당 학생의 정보를 삭제하시겠습니까?", "삭제 확인", 0) == 0) {
@@ -616,18 +618,30 @@ public class UI_2 {
 							
 							System.out.println(UserNum + "/" + UserName + "/" + UserId + "/" + UserPw);
 							
-							//[서버] - 학생 삭제 기능 구현
-							//userSql.deleteUser(String.valueOf(model.getValueAt(i, 0)));
-							
+							try {
+								InputStreamReader ISR = new InputStreamReader(Socket_Saver.socket.getInputStream());
+								String sendstring = "4/4/"+UserNum+"/"+UserId;				
+								PrintWriter print = new PrintWriter(Socket_Saver.socket.getOutputStream());          
+					            print.println(sendstring);
+					            print.flush();	
+					            BufferedReader buffer = new BufferedReader(ISR);			   
+					            DelResult = buffer.readLine();
+							} catch (IOException e2) {
+								// TODO Auto-generated catch block
+								e2.printStackTrace();
+							}
 							
 							if(DelResult.equals("1")) {
 								JOptionPane.showMessageDialog(frame, "삭제되었습니다.");
+								stud_panel.setVisible(false);
+								main_panel.setVisible(true);
+								model.removeRow(i);
 							} else {
 								JOptionPane.showMessageDialog(frame, "삭제에 실패했습니다.");
 							}
 						}
 						
-//						stud_table.fireTableDataChanged();	//테이블 데이터값 갱신
+//						
 
 					}
 				}
@@ -715,6 +729,7 @@ public class UI_2 {
 			public void actionPerformed(ActionEvent e) {
 				stud_panel.setVisible(true);
 				main_panel.setVisible(false);
+				
 				String[] stud_headers = new String [] {"학번", "이름", "ID", "PW"};
 				String stud_info_server = null;
 				try {
@@ -742,8 +757,8 @@ public class UI_2 {
 							 stud_contents[i][j] = tokens2[j];
 						}
 				}
-				
-				stud_table = new JTable(stud_contents, stud_headers);
+				model = new DefaultTableModel(stud_contents, stud_headers);
+				stud_table = new JTable(model);
 				stud_table.setRowHeight(30);
 				stud_table.setFont(new Font("굴림", Font.PLAIN, 15));
 				stud_table.setAlignmentX(0);
@@ -757,6 +772,8 @@ public class UI_2 {
 				scrollPane.setBounds(5, 35, 529, 409);
 				stud_panel.add(scrollPane);
 				frame.getContentPane().add(stud_panel);
+				stud_table.repaint();
+
 			}
 		});
 
@@ -1061,7 +1078,6 @@ public class UI_2 {
 					}
 				}
 		}
-		
 		enter_table = new JTable(enter_contents, enter_headers);
 		enter_panel.setVisible(true);
 		
@@ -1121,37 +1137,65 @@ public class UI_2 {
 		
 		//학생 추가, 변경
 		else {
-//			if(userSql.addUser(dialogMode, Integer.valueOf(addNum_textField.getText()), addName_textField.getText().trim(),
-//					addId_textField.getText().trim(), addPw_textField.getText().trim())) {
-			
-			//변수에 저장하는 부분
-			UserNum = addNum_textField.getText().trim();
-			UserName = addName_textField.getText().trim();
-			UserId = addId_textField.getText().trim();
-			UserPw = addPw_textField.getText().trim();
-			
-			//[서버] - 학생 추가, 변경 기능 구현
-			/*
-			 * 
-			 * */
-			
-			if(AddResult.equals("1")) {
-					JOptionPane.showMessageDialog(dialog, "추가 완료");
-					add_panel.setVisible(false);
-					stud_panel.setVisible(true);
-			} else if(EditResult.equals("1")){
-					JOptionPane.showMessageDialog(dialog, "변경 완료");
-					add_panel.setVisible(false);
-					stud_panel.setVisible(true);
-			} else if(AddResult.equals("0")) {
-					JOptionPane.showMessageDialog(dialog, "추가 실패");
-			} else if(EditResult.equals("0")) {
-					JOptionPane.showMessageDialog(dialog, "변경 실패");
-			}
-
-			AddResult = "0";
-			EditResult = "0";
-		}
+	         //변수에 저장하는 부분
+	         UserNum = addNum_textField.getText().trim();
+	         UserName = addName_textField.getText().trim();
+	         UserId = addId_textField.getText().trim();
+	         UserPw = addPw_textField.getText().trim();
+	         String ResultStr=null;
+	         if(addTitle_Label.getText().equals("정보 추가")) {
+	            //학생 추가 문자열
+	            ResultStr = "4/2/" + UserNum + "/" + UserName + "/" + UserId + "/" + UserPw;
+	            try {
+	    			InputStreamReader ISR = new InputStreamReader(Socket_Saver.socket.getInputStream());
+	    			PrintWriter print = new PrintWriter(Socket_Saver.socket.getOutputStream());          
+	                print.println(ResultStr);
+	                print.flush();
+	                BufferedReader buffer = new BufferedReader(ISR);
+	       
+	                AddResult = buffer.readLine();
+	    		} catch (IOException e2) {
+	    			// TODO Auto-generated catch block
+	    			e2.printStackTrace();
+	    		}
+	            if(AddResult.equals("1")) {
+	               JOptionPane.showMessageDialog(dialog, "추가 완료");
+	               add_panel.setVisible(false);
+	               stud_panel.setVisible(true);
+	               model.addRow(new Object[] {UserNum,UserName,UserId,UserPw});
+	            }
+	            else if(AddResult.equals("0")) {
+	               JOptionPane.showMessageDialog(dialog, "추가 실패");
+	            }
+	         }
+	         else if(addTitle_Label.getText().equals("정보 변경")) {
+	            //학생 변경 문자열
+	            ResultStr = "4/3/"+editNum_textLabel.getText()+"/"+"Name='"+UserName+ "', ID='" + UserId + "', PW='" + UserPw +"'";
+	            System.out.println(ResultStr);
+	            try {
+	    			InputStreamReader ISR = new InputStreamReader(Socket_Saver.socket.getInputStream());
+	    			PrintWriter print = new PrintWriter(Socket_Saver.socket.getOutputStream());          
+	                print.println(ResultStr);
+	                print.flush();
+	                BufferedReader buffer = new BufferedReader(ISR);
+	       
+	                EditResult = buffer.readLine();
+	    		} catch (IOException e2) {
+	    			// TODO Auto-generated catch block
+	    			e2.printStackTrace();
+	    		}
+	            if(EditResult.equals("1")){
+	                  JOptionPane.showMessageDialog(dialog, "변경 완료");
+	                  add_panel.setVisible(false);
+	                  stud_panel.setVisible(true);
+	             }
+	             else if(EditResult.equals("0")) {
+	                  JOptionPane.showMessageDialog(dialog, "변경 실패");
+	            }
+	         }
+	         AddResult = "0";
+	         EditResult = "0";
+	      }
+	   }
 		
-	}
 }
