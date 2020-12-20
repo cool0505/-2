@@ -37,7 +37,7 @@ import org.opencv.videoio.VideoCapture;
 
 import net.sourceforge.tess4j.Tesseract;
 class frame2 extends JFrame{
-	private Image background=new ImageIcon("C:\\Users\\admin\\Desktop\\UNIVPASS1.jpg").getImage();
+	private Image background=new ImageIcon("UNIVPASS1.jpg").getImage();
 	public void paint(Graphics g) {//그리는 함수
 		g.drawImage(background, 0, 0, null);//background를 그려줌
 	}
@@ -89,13 +89,8 @@ public class IDcard_detector {
 
 
 		CascadeClassifier cascadeFaceClassifier = new CascadeClassifier(
-				"C:/Users/admin/Desktop/final/test.xml");
-		/*CascadeClassifier cascadeEyeClassifier = new CascadeClassifier(
-				"C:/Users/admin/Documents/opencv-object-detection/data/haarcascade files/haarcascade_eye.xml");
-		
-		CascadeClassifier cascadeNoseClassifier = new CascadeClassifier(
-				"C:/Users/admin/Documents/opencv-object-detection/data/haarcascade files/haarcascade_mcs_nose.xml");
-*/
+				"test.xml");
+
 		VideoCapture videoDevice = new VideoCapture(0);
 		videoDevice.open(0);
 		if (videoDevice.isOpened()) {
@@ -106,15 +101,8 @@ public class IDcard_detector {
 				Mat subimage = null;
 				Mat OCRimage = null;
 				MatOfRect faces = new MatOfRect();
-				//Rect rect=null;
 				cascadeFaceClassifier.detectMultiScale(frameCapture,faces);								
-				/*try {
-				rect=faces.toArray()[0];
-				}
-				catch(ArrayIndexOutOfBoundsException e){
-					continue;
-					
-				}*/
+
 				for (Rect rect : faces.toArray()) {
 					if((sum=rect.width+rect.height)>600) {
 				  		lbl3.setFont(new Font("굴림",Font.BOLD,30));
@@ -124,56 +112,23 @@ public class IDcard_detector {
 						Imgproc.rectangle(frameCapture, new Point(rect.x, rect.y+50), new Point(rect.x + rect.width, rect.y + rect.height-50),
 						new Scalar(0, 100, 0),3);
 						LIVEPushImage(ConvertMat2Image(frameCapture));
-						//System.out.println(process("Img5.jpg"));
+					
 				        Rect rectCrop=new Rect(new Point(rect.x, rect.y+50), new Point(rect.x + rect.width, rect.y + rect.height-50));
 				        Rect rectCrop2=new Rect(new Point(0, 50), new Point(rect.width, rect.height-180));
 				        subimage = new Mat(frameCapture ,rectCrop);				        
 				        OCRimage = new Mat(subimage ,rectCrop2);
 					}
 				}	
-				
-				
-				
-				/*MatOfRect eyes = new MatOfRect();
-				cascadeEyeClassifier.detectMultiScale(frameCapture, eyes);
-				for (Rect rect : eyes.toArray()) {
 
-					Imgproc.putText(frameCapture, "Eye", new Point(rect.x,rect.y-5), 1, 2, new Scalar(0,0,255));				
-
-					Imgproc.rectangle(frameCapture, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height),
-							new Scalar(200, 200, 100),2);
-				}*/
-				
-			
-				/*MatOfRect nose = new MatOfRect();
-				cascadeNoseClassifier.detectMultiScale(frameCapture, nose);
-				for (Rect rect : nose.toArray()) {
-					
-					Imgproc.putText(frameCapture, "Nose", new Point(rect.x,rect.y-5), 1, 2, new Scalar(0,0,255));				
-					
-					Imgproc.rectangle(frameCapture, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height),
-							new Scalar(50, 255, 50),2);
-				}*/
-				
-
-			   /*MatOfRect mouth = new MatOfRect();
-				cascadeMouthClassifier.detectMultiScale(frameCapture, mouth);
-				for (Rect rect : mouth.toArray()) {
-					
-					Imgproc.rectangle(frameCapture, new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height),
-							new Scalar(129, 90, 50),2);
-				}
-				
-				*/
 				
 				LIVEPushImage(ConvertMat2Image(frameCapture));
 				if(sum>600) {
 
 					SubPushImage(ConvertMat2Image(subimage));
-					//SubPushImage(ResizeImage(OCRimage));
+					
 					ResizeImage(OCRimage);
 				}
-				//System.out.println(String.format("%s y�z(FACES)", faces.toArray().length));
+			
 			}
 		} else {
 			System.out.println("Video aygytyna ba?lanylamady.");
@@ -200,29 +155,14 @@ public class IDcard_detector {
 			e.printStackTrace();
 			return null;
 		}
-			/*File file3 = new File("C:\\Users\\admin\\Desktop\\asdasd\\final\\pororo2.jpg");
-	        try {
-				ImageIO.write(goruntu, "jpg", file3);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-	        String result ="";
-			try {
-				
-				result =instance.doOCR(goruntu);
-				
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
-			System.out.println(result);*/
+	
 		
 		return goruntu;
 	}
 	
 	private static void ResizeImage(Mat asd) {
 		Mat last= new Mat();
-		// Rect rectCrop=new Rect(new Point(rect.x, rect.y), new Point(rect.x + rect.width, rect.y + rect.height));
+		
 		String result ="";
 		try {
 			Imgproc.resize(asd,last,new Size(1600,800));
@@ -279,9 +219,9 @@ public class IDcard_detector {
 					String buf=strcomp[0];
 					strcomp[0]=strcomp[1];
 					strcomp[1]=resultF;
-					System.out.println("빠꿈");
+
 				}
-				System.out.println("빠꿈2");
+
 				
 				
 			}
