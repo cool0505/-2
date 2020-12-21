@@ -89,7 +89,7 @@ public class UI {
 	private void initialize() {
 		
 		frame = new JFrame();
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\User\\eclipse-workspace\\Project\\Logo.JPG"));
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage("Logo.JPG"));
 		frame.setTitle("UNIV-PASS");
 		frame.setBounds(100, 100, 520, 353);
 		frame.setLocationRelativeTo(null);
