@@ -12,7 +12,14 @@ public class connect_building {
 	    
 	    try {
 	        Class.forName("com.mysql.cj.jdbc.Driver");
-	        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/building_owner?serverTimezone=UTC", "root", "Rlanwjd67!");
+	        
+	        // 이렇게 변경해주세요.
+	        
+	        // "root" => "MySQL 계정명"
+	        // "Rlanwjd67!" => "MySQL 계정 비밀번호"
+	        
+	        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/building_owner?serverTimezone=UTC", "root", "Rlanwjd67!"); 
+	        
 	        if(conn != null)
 	        	System.out.println("> building_owner DB connect!");
 	    } catch (SQLException ex) {
