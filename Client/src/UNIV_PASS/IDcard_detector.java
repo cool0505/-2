@@ -76,7 +76,7 @@ public class IDcard_detector {
 	}
 	public static void main(String[] args) {
 		try {
-			socket = new Socket("192.168.1.6", 8282);
+			socket = new Socket("192.168.1.6", 8282);//IP주소 서버가 실행되고있는 IP주소 입력
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -66,7 +66,7 @@ public class UI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {			
 				try {
-					Socket_Saver.socket = new Socket("192.168.1.6", 8282);
+					Socket_Saver.socket = new Socket("192.168.1.6", 8282);   //IP주소 서버가 실행되고있는 IP주소 입력
 					UI ui = new UI();
 					ui.frame.setVisible(true);
 				} catch (Exception e) {
